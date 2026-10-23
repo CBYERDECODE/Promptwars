@@ -405,6 +405,13 @@ describe('ResQ AI Backend Test Suite (Section H Criteria)', () => {
 
     expect(allowed.status).toBe(200);
     expect(allowed.headers['access-control-allow-origin']).toBe('http://localhost:5173');
+
+    const vercelAllowed = await request(app)
+      .get('/api/health')
+      .set('Origin', 'https://promptwars-xlkh-11o48x4nd-cbyerdecodes-projects.vercel.app');
+
+    expect(vercelAllowed.status).toBe(200);
+    expect(vercelAllowed.headers['access-control-allow-origin']).toBe('https://promptwars-xlkh-11o48x4nd-cbyerdecodes-projects.vercel.app');
   });
 
   // H.18: Destructive administrative endpoints require server-side authorization

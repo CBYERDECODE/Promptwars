@@ -19,7 +19,7 @@ import { createIncidentsRouter } from './routes/incidents.js';
 import { createSourcesRouter } from './routes/sources.js';
 import { createActivityRouter } from './routes/activity.js';
 import { errorHandler, AppError } from './middleware/errorHandler.js';
-import { config } from './config.js';
+import { config, isOriginAllowed } from './config.js';
 
 export function createApp(
   customRepo?: IIncidentRepository,
@@ -42,7 +42,7 @@ export function createApp(
       // Requests without an Origin header (curl, server-to-server, same-origin) are not
       // subject to CORS enforcement by the browser, so they are allowed through.
       if (!origin) return callback(null, true);
-      if (config.corsOrigins.includes(origin)) {
+      if (isOriginAllowed(origin, config.corsOrigins)) {
         return callback(null, true);
       }
       return callback(

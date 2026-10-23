@@ -32,8 +32,29 @@ export const DEFAULT_DEV_CORS_ORIGINS: string[] = [
   'http://localhost:5174',
   'http://127.0.0.1:5174',
   'http://localhost:4173',
-  'http://127.0.0.1:4173'
+  'http://127.0.0.1:4173',
+  'https://*.vercel.app'
 ];
+
+/**
+ * Checks whether an incoming request Origin is permitted by the allowlist.
+ * Supports exact matches (e.g. 'http://localhost:5173') as well as
+ * wildcard subdomain patterns (e.g. 'https://*.vercel.app').
+ */
+export function isOriginAllowed(origin: string, allowedOrigins: string[]): boolean {
+  for (const pattern of allowedOrigins) {
+    if (pattern === origin) return true;
+    if (pattern.includes('*')) {
+      const regexPattern = '^' + pattern
+        .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/\*/g, '[a-zA-Z0-9-_.]+') + '$';
+      if (new RegExp(regexPattern, 'i').test(origin)) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 /**
  * Resolves the CORS allowlist.
@@ -47,10 +68,13 @@ function resolveCorsOrigins(): string[] {
   if (!raw || raw.trim().length === 0) {
     return [...DEFAULT_DEV_CORS_ORIGINS];
   }
-  return raw
+  const configured = raw
     .split(',')
     .map(origin => origin.trim())
     .filter(origin => origin.length > 0);
+
+  // Merge configured origins with default development/preview origins (*.vercel.app, localhost)
+  return Array.from(new Set([...configured, ...DEFAULT_DEV_CORS_ORIGINS]));
 }
 
 export const config: AppConfig = {
