@@ -43,8 +43,8 @@ COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/frontend/dist ./apps/frontend/dist
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/shared/node_modules ./packages/shared/node_modules
-COPY --from=builder /app/apps/backend/node_modules ./apps/backend/node_modules
+
+
 
 # Ensure data directories exist
 RUN mkdir -p /app/apps/backend/data
