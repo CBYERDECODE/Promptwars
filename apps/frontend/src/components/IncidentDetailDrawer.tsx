@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   IncidentRecord, 
   IncidentStatus, 
-  IncidentReportExport 
+  IncidentReportExport,
+  EvidenceItem 
 } from '@resq-ai/shared';
 import { PriorityBadge } from './PriorityBadge';
 import { ProvenanceBadge } from './ProvenanceBadge';
@@ -229,7 +230,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                   <PriorityBadge priority={incident.priority.level} />
                 </div>
                 <ul className="space-y-1.5 text-xs text-slate-300 list-disc list-inside">
-                  {incident.priority.reasons.map((reason, idx) => (
+                  {incident.priority.reasons.map((reason: string, idx: number) => (
                     <li key={idx} className="leading-relaxed">
                       {reason}
                     </li>
@@ -297,7 +298,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                   Hazard Indicators
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {incident.hazard_indicators.map((h, i) => (
+                  {incident.hazard_indicators.map((h: string, i: number) => (
                     <span key={i} className="px-2.5 py-1 rounded text-xs bg-navy-800 text-slate-200 border border-navy-700">
                       ⚠️ {h}
                     </span>
@@ -313,7 +314,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                   Access Constraints
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
-                  {incident.access_constraints.map((c, i) => (
+                  {incident.access_constraints.map((c: string, i: number) => (
                     <span key={i} className="px-2.5 py-1 rounded text-xs bg-navy-800 text-slate-200 border border-navy-700">
                       🚧 {c}
                     </span>
@@ -332,7 +333,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                     <span>Unresolved Conflicting Statements:</span>
                   </div>
                   <ul className="list-disc list-inside space-y-1">
-                    {incident.conflicting_information.map((conflict, i) => (
+                    {incident.conflicting_information.map((conflict: string, i: number) => (
                       <li key={i}>{conflict}</li>
                     ))}
                   </ul>
@@ -349,7 +350,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
               </div>
 
               <div className="space-y-3">
-                {incident.evidence_items.map((ev, idx) => (
+                {incident.evidence_items.map((ev: EvidenceItem, idx: number) => (
                   <div key={idx} className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80 space-y-2">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <ProvenanceBadge provenance={ev.provenance} />
@@ -417,7 +418,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                       <span>Operational Decision Checklist</span>
                     </h3>
                     <div className="space-y-2">
-                      {report.checklist.map((item) => (
+                      {report.checklist.map((item: IncidentReportExport['checklist'][number]) => (
                         <div key={item.id} className="flex items-start gap-2.5 text-xs text-slate-200">
                           <input
                             type="checkbox"
@@ -438,7 +439,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                     <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
                       Recommendations (Advisory Only - Not Executed)
                     </h3>
-                    {report.recommendations.map((rec, i) => (
+                    {report.recommendations.map((rec: IncidentReportExport['recommendations'][number], i: number) => (
                       <div key={i} className="p-2.5 rounded bg-navy-950 border border-navy-800 text-xs">
                         <span className="font-bold text-amber-300 block mb-1">
                           [RECOMMENDED ADVICE - NOT EXECUTED] {rec.category}
@@ -474,7 +475,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                   Fused Source Reports
                 </h3>
                 <div className="space-y-2">
-                  {incident.original_reports?.map((rep, idx) => (
+                  {incident.original_reports?.map((rep: IncidentRecord, idx: number) => (
                     <div key={idx} className="p-3 rounded-lg bg-navy-850 border border-navy-700/80 text-xs space-y-1">
                       <div className="flex justify-between items-center">
                         <span className="font-mono text-teal-300 font-bold">{rep.id}</span>

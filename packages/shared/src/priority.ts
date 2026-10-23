@@ -1,4 +1,4 @@
-import { IncidentType, PeopleAtRisk, PriorityEvaluation, PriorityLevel, ReportedInjuries } from './types.js';
+import { IncidentType, PeopleAtRisk, PriorityEvaluation, ReportedInjuries } from './types.js';
 
 export interface PriorityInput {
   incident_type: IncidentType;
