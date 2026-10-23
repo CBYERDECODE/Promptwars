@@ -1,0 +1,21 @@
+{
+  "name": "resq-ai-root",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "dev": "concurrently \"npm run dev -w @resq-ai/backend\" \"npm run dev -w @resq-ai/frontend\"",
+    "start": "npm run start -w @resq-ai/backend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "typescript": "^5.8.2"
+  }
+}

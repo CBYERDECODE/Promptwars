@@ -1,0 +1,311 @@
+import { IncidentRecord } from '@resq-ai/shared';
+
+export const INITIAL_DEMO_INCIDENTS: IncidentRecord[] = [
+  {
+    id: 'demo-fl-001',
+    incident_type: 'FLOOD',
+    summary: 'Rapid flash flooding at Maplewood Valley Senior Center. Water rising over 3 feet on ground floor. Staff and 12 elderly residents trapped on upper balcony. Main bridge access impassable.',
+    reported_location: '440 Riverfront Boulevard, Maplewood Valley',
+    normalized_location: {
+      formatted_address: '440 Riverfront Blvd, Maplewood Valley, CA 90210',
+      city: 'Maplewood Valley',
+      region: 'CA',
+      country: 'USA',
+      latitude: 37.7749,
+      longitude: -122.4194,
+      confidence: 'HIGH'
+    },
+    hazard_indicators: [
+      'Rapidly rising water (>3ft)',
+      'Submerged electrical breaker',
+      'Structural current hazard'
+    ],
+    people_at_risk: {
+      estimated_count: 14,
+      description: '12 residents and 2 staff members stranded on second floor balcony'
+    },
+    reported_injuries: {
+      estimated_count: 1,
+      description: 'One resident suffering mild hypothermia'
+    },
+    access_constraints: [
+      'Main river bridge impassable due to water depth',
+      'Requires shallow-draft rescue boat for approach'
+    ],
+    reported_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    missing_information: [
+      'Status of emergency backup generator',
+      'Direct mobile contact for second floor balcony'
+    ],
+    conflicting_information: [],
+    evidence_items: [
+      {
+        id: 'ev-01',
+        claim: 'Water level currently exceeds 3 feet inside main lobby',
+        provenance: 'USER_REPORTED',
+        confidence: 0.95,
+        source_excerpt: 'Lobby water is past my waist right now, around 3.5 feet.'
+      },
+      {
+        id: 'ev-02',
+        claim: '14 individuals sheltering on 2nd floor balcony',
+        provenance: 'USER_REPORTED',
+        confidence: 0.9,
+        source_excerpt: 'We moved all 12 seniors and 2 nurses upstairs to balcony.'
+      },
+      {
+        id: 'ev-03',
+        claim: 'River stage overflow risk predicted by hydrological alert',
+        provenance: 'VERIFIED',
+        confidence: 0.85,
+        source_excerpt: 'Regional Water Agency: Maplewood River cresting 4ft above flood stage.',
+        source_name: 'Regional Hydrological Warning Service',
+        source_url: 'https://water.example.gov/alerts/maplewood'
+      }
+    ],
+    uncertainty_notes: [
+      'Rate of water rise in next 60 minutes subject to upstream reservoir release.'
+    ],
+    priority: {
+      level: 'Critical',
+      reasons: [
+        'Direct life safety threat: 1 injury/injuries reported.',
+        'Imminent danger to population: ~14 people reported at risk.',
+        'Severe hazard present (FLOOD) with critical indicators: Rapidly rising water (>3ft), Submerged electrical breaker.'
+      ],
+      disclaimer: 'Suggested priority - decision support only. In immediate danger, contact local emergency services now. Do not wait for AI analysis.'
+    },
+    status: 'IN_REVIEW',
+    created_at: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+    source_channel: 'SIMULATED_DEMO',
+    is_simulated: true,
+    attachments: [
+      {
+        id: 'att-01',
+        filename: 'lobby_flood_level.jpg',
+        mime_type: 'image/jpeg',
+        size_bytes: 421000,
+        uploaded_at: new Date(Date.now() - 25 * 60 * 1000).toISOString()
+      }
+    ],
+    verification_status: 'VERIFIED',
+    sources: [
+      {
+        source_name: 'Regional Hydrological Warning Service',
+        source_url: 'https://water.example.gov/alerts/maplewood',
+        retrieval_timestamp: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
+        excerpt: 'Maplewood River gauge 4A exceeded major flood threshold at 08:30 UTC.',
+        claim_supported: 'River stage overflow risk predicted by hydrological alert',
+        domain: 'water.example.gov'
+      }
+    ]
+  },
+  {
+    id: 'demo-chem-002',
+    incident_type: 'HAZARDOUS_MATERIAL',
+    summary: 'Commercial chemical tanker jackknifed on Highway 9 outer loop near Mile 14. Strong acrid odor and yellowish vapor plume venting from top valve. Traffic halted in both directions.',
+    reported_location: 'Highway 9 Northbound at Mile Marker 14, Pine Valley',
+    normalized_location: {
+      formatted_address: 'Hwy 9 Northbound MM 14, Pine Valley, CA 90211',
+      city: 'Pine Valley',
+      region: 'CA',
+      country: 'USA',
+      latitude: 37.7833,
+      longitude: -122.4167,
+      confidence: 'HIGH'
+    },
+    hazard_indicators: [
+      'Chemical vapor plume venting',
+      'Corrosive/toxic odor reported',
+      'Flammable cargo placard (UN 1017)'
+    ],
+    people_at_risk: {
+      estimated_count: 50,
+      description: 'Motorists queued in northbound backup within 500m downwind'
+    },
+    reported_injuries: {
+      estimated_count: 0,
+      description: 'No direct injuries reported yet; motorists coughing'
+    },
+    access_constraints: [
+      'Highway 9 closed entirely between Exits 12 and 15',
+      'Upwind approach mandatory for emergency personnel'
+    ],
+    reported_at: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
+    missing_information: [
+      'Exact cargo manifest confirmation from carrier',
+      'Wind speed and direction telemetry at incident site'
+    ],
+    conflicting_information: [],
+    evidence_items: [
+      {
+        id: 'ev-11',
+        claim: 'Venting vapor observed from damaged pressure release valve',
+        provenance: 'USER_REPORTED',
+        confidence: 0.9,
+        source_excerpt: 'Yellowish smoke is hissing out of the tanker top dome.'
+      },
+      {
+        id: 'ev-12',
+        claim: 'Placard indicates hazardous chlorine gas compound',
+        provenance: 'AI_INFERRED',
+        confidence: 0.75,
+        source_excerpt: 'Visual placard match correlates with UN 1017 compressed gas.'
+      }
+    ],
+    uncertainty_notes: [
+      'Plume dispersion model pending confirmation of ground-level wind telemetry.'
+    ],
+    priority: {
+      level: 'High',
+      reasons: [
+        'Active high-severity event (HAZARDOUS_MATERIAL) requiring immediate mitigation.',
+        'Access constraints present cutting off emergency transit: Highway 9 closed entirely between Exits 12 and 15.'
+      ],
+      disclaimer: 'Suggested priority - decision support only. In immediate danger, contact local emergency services now. Do not wait for AI analysis.'
+    },
+    status: 'NEW',
+    created_at: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
+    source_channel: 'SIMULATED_DEMO',
+    is_simulated: true,
+    attachments: [],
+    verification_status: 'UNVERIFIED',
+    sources: []
+  },
+  {
+    id: 'demo-rd-003',
+    incident_type: 'BLOCKED_ROAD',
+    summary: 'Fallen mature pine tree and utility cable across secondary roadway on Oakridge Lane. No sparks or arcing observed. Both residential driveways accessible via west detour.',
+    reported_location: '88 Oakridge Lane near Elm Court',
+    normalized_location: {
+      formatted_address: '88 Oakridge Ln, Oakridge, CA 90212',
+      city: 'Oakridge',
+      region: 'CA',
+      country: 'USA',
+      latitude: 37.765,
+      longitude: -122.43,
+      confidence: 'MEDIUM'
+    },
+    hazard_indicators: [
+      'Fallen non-energized telecom cable',
+      'Obstructed lane'
+    ],
+    people_at_risk: {
+      estimated_count: 0,
+      description: null
+    },
+    reported_injuries: {
+      estimated_count: 0,
+      description: null
+    },
+    access_constraints: [
+      'Single lane blocked; residential detour available via Elm Court'
+    ],
+    reported_at: new Date(Date.now() - 75 * 60 * 1000).toISOString(),
+    missing_information: [
+      'Telecom utility dispatch ETA for cable removal'
+    ],
+    conflicting_information: [],
+    evidence_items: [
+      {
+        id: 'ev-21',
+        claim: 'Downed line is fiber-optic telecom, not high-voltage power',
+        provenance: 'USER_REPORTED',
+        confidence: 0.85,
+        source_excerpt: 'Cable is thick black fiber with no sparks or buzzing.'
+      }
+    ],
+    uncertainty_notes: [],
+    priority: {
+      level: 'Moderate',
+      reasons: [
+        'Localized operational disruption: incident type BLOCKED_ROAD with active indicators.',
+        'Identified indicators: Fallen non-energized telecom cable, Obstructed lane.'
+      ],
+      disclaimer: 'Suggested priority - decision support only. In immediate danger, contact local emergency services now. Do not wait for AI analysis.'
+    },
+    status: 'TRIAGED',
+    created_at: new Date(Date.now() - 75 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 50 * 60 * 1000).toISOString(),
+    source_channel: 'SIMULATED_DEMO',
+    is_simulated: true,
+    attachments: [],
+    verification_status: 'UNVERIFIED',
+    sources: []
+  },
+  {
+    id: 'demo-conf-004',
+    incident_type: 'FLOOD',
+    summary: 'Conflicting flood condition reports on Willow Creek Drive. Caller 1 claims 4ft standing water entering houses; Caller 2 on same block states street is bone-dry and drainage clear.',
+    reported_location: 'Willow Creek Drive between 2nd and 3rd St',
+    normalized_location: {
+      formatted_address: 'Willow Creek Dr, Willow Creek, CA 90213',
+      city: 'Willow Creek',
+      region: 'CA',
+      country: 'USA',
+      latitude: 37.755,
+      longitude: -122.44,
+      confidence: 'MEDIUM'
+    },
+    hazard_indicators: [
+      'Contested flooding reports',
+      'Potential storm drain backup'
+    ],
+    people_at_risk: {
+      estimated_count: null,
+      description: 'Unknown pending on-scene physical verification'
+    },
+    reported_injuries: {
+      estimated_count: 0,
+      description: null
+    },
+    access_constraints: [
+      'Reported standing water unverified'
+    ],
+    reported_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    missing_information: [
+      'Physical inspection by district field unit',
+      'Accurate current street camera image'
+    ],
+    conflicting_information: [
+      'Caller A (10:15): "Water is 4ft high and pouring into living rooms."',
+      'Caller B (10:20): "Street is completely dry, no water anywhere on Willow Creek Dr."'
+    ],
+    evidence_items: [
+      {
+        id: 'ev-31',
+        claim: '4ft water flooding houses',
+        provenance: 'UNVERIFIED_OR_CONFLICTING',
+        confidence: 0.3,
+        source_excerpt: 'Water is 4ft high and pouring into living rooms.'
+      },
+      {
+        id: 'ev-32',
+        claim: 'Street is completely dry',
+        provenance: 'UNVERIFIED_OR_CONFLICTING',
+        confidence: 0.3,
+        source_excerpt: 'Street is completely dry, no water anywhere.'
+      }
+    ],
+    uncertainty_notes: [
+      'Direct factual contradiction regarding water level requires physical scout.'
+    ],
+    priority: {
+      level: 'Needs review',
+      reasons: [
+        'Forced to "Needs review" due to 2 unresolved conflicting statement(s): Caller A (10:15): "Water is 4ft high..."; Caller B (10:20): "Street is completely dry..."'
+      ],
+      disclaimer: 'Suggested priority - decision support only. In immediate danger, contact local emergency services now. Do not wait for AI analysis.'
+    },
+    status: 'NEW',
+    created_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    updated_at: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    source_channel: 'SIMULATED_DEMO',
+    is_simulated: true,
+    attachments: [],
+    verification_status: 'CONFLICTING',
+    sources: []
+  }
+];
