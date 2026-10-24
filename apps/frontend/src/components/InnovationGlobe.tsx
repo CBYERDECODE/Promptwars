@@ -6,7 +6,7 @@ import * as THREE from 'three';
 const Globe: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
 
-  useFrame((state) => {
+  useFrame((_state) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.005;
       meshRef.current.rotation.x += 0.002;
