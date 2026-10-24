@@ -37,9 +37,6 @@ const RescuePulseView = React.lazy(() =>
 const ReliefChain = React.lazy(() =>
   import('./views/rescue/ReliefChain').then(m => ({ default: m.ReliefChain }))
 );
-const DisasterTwinView = React.lazy(() =>
-  import('./views/twin/DisasterTwinView').then(m => ({ default: m.DisasterTwinView }))
-);
 const DemoTour = React.lazy(() =>
   import('./views/rescue/DemoTour').then(m => ({ default: m.DemoTour }))
 );
@@ -210,8 +207,6 @@ export const App: React.FC = () => {
             {activeTab === 'pulse' && <RescuePulseView />}
 
             {activeTab === 'chain' && <ReliefChain />}
-
-            {activeTab === 'twin' && <DisasterTwinView />}
           </Suspense>
         </main>
       </div>
