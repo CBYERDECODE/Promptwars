@@ -74,18 +74,27 @@ export const OverviewView: React.FC<Props> = ({ onNavigate, incidentCount }) => 
               >
                 Launch Command Center
               </Button>
-              <button 
+              <button
+                type="button"
                 onClick={() => onNavigate('demo')}
                 className="flex items-center gap-3 px-6 py-3 text-xs font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group"
               >
                 <PlayCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
                 <span>Watch Overview</span>
               </button>
+              <Button
+                variant="secondary"
+                size="md"
+                className="h-14 px-8 text-sm uppercase tracking-widest rounded-full"
+                onClick={() => onNavigate('twin')}
+              >
+                Open 3D Disaster Twin
+              </Button>
             </div>
           </div>
 
           {/* 3D Visualization Area */}
-          <div className="flex-1 min-h-[400px] lg:min-h-0 bg-slate-50/30 p-4 lg:p-8">
+          <div className="flex w-full min-h-[400px] flex-1 flex-col bg-slate-50/30 p-4 lg:min-h-[480px] lg:p-8">
             <InnovationGlobe incidentCount={incidentCount} />
           </div>
         </div>

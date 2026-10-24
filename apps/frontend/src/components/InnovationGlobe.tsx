@@ -72,9 +72,15 @@ const Globe: React.FC<{ pulseIntensity: number }> = ({ pulseIntensity }) => {
 
 export const InnovationGlobe: React.FC<{ incidentCount?: number }> = ({ incidentCount = 4 }) => {
   return (
-    <div className="w-full h-full min-h-[400px] flex items-center justify-center relative overflow-hidden bg-slate-50/50 rounded-2xl border border-slate-200/50 shadow-inner">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
-      <Canvas camera={{ position: [0, 0, 3], fov: 45 }}>
+    <div className="relative h-full min-h-[400px] w-full overflow-hidden rounded-2xl border border-slate-200/50 bg-slate-50/50 shadow-inner">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.08),transparent)]" />
+      <Canvas
+        className="absolute inset-0 h-full w-full touch-none"
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        camera={{ position: [0, 0, 3], fov: 45 }}
+      >
+        <color attach="background" args={['#F1F5F9']} />
         <ambientLight intensity={1.5} />
         <pointLight position={[10, 10, 10]} intensity={2} />
         <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />

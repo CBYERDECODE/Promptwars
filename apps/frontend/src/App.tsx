@@ -214,9 +214,13 @@ export const App: React.FC = () => {
             {activeTab === 'pulse' && <RescuePulseView />}
 
             {activeTab === 'chain' && <ReliefChain />}
-
-            {activeTab === 'twin' && <TwinDisasterView />}
           </Suspense>
+
+          {activeTab === 'twin' && (
+            <Suspense fallback={<CardSkeleton label="Loading 3D disaster twin" rows={8} />}>
+              <TwinDisasterView />
+            </Suspense>
+          )}
         </main>
       </div>
 

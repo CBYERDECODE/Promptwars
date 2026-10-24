@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
+maplibregl.setWorkerUrl(maplibreWorkerUrl);
 import type { FeatureCollection } from 'geojson';
 import { edgeKey, type TwinCity, type TwinFloodAssessment, type TwinRoute } from '@resq-ai/shared';
 import { EXPOSURE_HEX, SEVERITY_HEX } from './twinLayout';

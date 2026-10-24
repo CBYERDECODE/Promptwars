@@ -82,7 +82,7 @@ export const TwinDisasterView: React.FC = () => {
   const [baselineRoute, setBaselineRoute] = useState<TwinRoute | null>(null);
   const [selectedBuildingId, setSelectedBuildingId] = useState<string | null>(null);
   const [sideTab, setSideTab] = useState<SideTab>('flood');
-  const [viewMode, setViewMode] = useState<'3d' | 'split'>('split');
+  const [viewMode, setViewMode] = useState<'3d' | 'split'>('3d');
 
   const [timelineIndex, setTimelineIndex] = useState(0);
   const [timelinePlaying, setTimelinePlaying] = useState(false);
