@@ -14,10 +14,15 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@react-spring/three": "^9.7.5",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
     "@resq-ai/shared": "*",
+    "@types/three": "^0.186.0",
     "lucide-react": "^0.475.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",

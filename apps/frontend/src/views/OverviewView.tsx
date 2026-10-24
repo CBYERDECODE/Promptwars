@@ -9,6 +9,7 @@ import {
   PlayCircle, 
   Zap
 } from 'lucide-react';
+import { InnovationGlobe } from '../components/InnovationGlobe';
 
 interface Props {
   onNavigate: (tab: any) => void;
@@ -46,11 +47,11 @@ export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
         </div>
 
         {/* Main Content Area */}
-        <div className="flex flex-col min-h-[400px]">
+        <div className="flex flex-col lg:flex-row min-h-[500px]">
           {/* Copy & CTA */}
-          <div className="flex-1 p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center text-center space-y-8">
+          <div className="flex-1 p-8 sm:p-12 lg:p-16 flex flex-col justify-center items-center lg:items-start text-center lg:text-left space-y-8">
             <div className="space-y-6 max-w-4xl">
-              <div className="flex items-center justify-center gap-2 text-accent">
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-accent">
                 <Zap className="w-5 h-5 fill-accent" />
                 <span className="text-xs font-black uppercase tracking-[0.2em]">Operational Intelligence</span>
               </div>
@@ -58,12 +59,12 @@ export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
                 Traceable Intelligence <br /> 
                 <span className="text-accent/90">for Life Safety.</span>
               </h1>
-              <p className="text-lg sm:text-xl text-ink-subtle max-w-2xl mx-auto leading-relaxed font-medium">
+              <p className="text-lg sm:text-xl text-ink-subtle max-w-2xl leading-relaxed font-medium">
                 ResQ AI transforms chaotic emergency noise into structured, evidence-aware operational records with deterministic triage.
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-5">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-5">
               <Button
                 variant="primary"
                 size="md"
@@ -72,11 +73,19 @@ export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
               >
                 Launch Command Center
               </Button>
-              <button className="flex items-center gap-3 px-6 py-3 text-xs font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group">
+              <button 
+                onClick={() => onNavigate('demo')}
+                className="flex items-center gap-3 px-6 py-3 text-xs font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group"
+              >
                 <PlayCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
                 <span>Watch Overview</span>
               </button>
             </div>
+          </div>
+
+          {/* 3D Visualization Area */}
+          <div className="flex-1 min-h-[400px] lg:min-h-0 bg-slate-50/30 p-4 lg:p-8">
+            <InnovationGlobe />
           </div>
         </div>
       </section>
