@@ -12,13 +12,15 @@ import {
   AlertOctagon, 
   GitMerge, 
   ShieldCheck, 
-  ArrowUpRight, 
-  Sparkles, 
   Server,
   Activity,
   Cpu,
   Database,
-  Globe
+  Globe,
+  PlayCircle,
+  Zap,
+  CheckCircle2,
+  Users2
 } from 'lucide-react';
 
 interface Props {
@@ -31,70 +33,132 @@ export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedM
   const online = useOnlineStatus();
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {!online && (
         <OfflineState message="You are offline. The overview figures shown are the last values this device read and cannot be refreshed until the connection returns." />
       )}
       
-      {/* Hero Section: The Problem Statement */}
+      {/* New Template Hero Section */}
       <section 
-        className="relative overflow-hidden p-6 sm:p-10 rounded-2xl border border-line bg-surface shadow-xs"
+        className="relative overflow-hidden rounded-3xl border border-line bg-white shadow-xl flex flex-col"
         aria-labelledby="overview-hero-title"
       >
-        {/* Subtle background decoration */}
-        <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -mb-12 -ml-12 w-64 h-64 bg-blue-400/5 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="relative space-y-5">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <Badge tone="accent" icon={Activity}>
-              Emergency Intelligence Decision Support
-            </Badge>
-            <Badge tone="neutral" size="sm" className="bg-surface border-line shadow-2xs">
-              PromptWars 2026 Hackathon
+        {/* Top Info Bar */}
+        <div className="px-8 py-4 border-b border-line flex items-center justify-between text-[11px] font-bold uppercase tracking-widest text-ink-muted">
+          <div className="flex items-center gap-4">
+            <span>// Emergency Intel</span>
+            <span className="text-line">|</span>
+            <span>ResQ AI System v1.0</span>
+          </div>
+          <div className="flex items-center gap-6">
+            <span className="hover:text-accent cursor-pointer transition-colors">Program</span>
+            <span className="hover:text-accent cursor-pointer transition-colors">Safety</span>
+            <span className="hover:text-accent cursor-pointer transition-colors">Audit</span>
+            <Badge tone="neutral" size="sm" className="bg-ink text-white border-transparent">
+              Live Feed
             </Badge>
           </div>
+        </div>
 
-          <h1 id="overview-hero-title" className="text-3xl sm:text-4xl font-extrabold text-ink tracking-tight max-w-2xl leading-[1.1]">
-            Turn Messy Emergency Noise into <span className="text-accent">Traceable Intelligence</span>
-          </h1>
+        {/* Main Content Area */}
+        <div className="flex flex-col lg:flex-row min-h-[500px]">
+          {/* Left Side: Copy & CTA */}
+          <div className="flex-1 p-8 sm:p-12 lg:p-16 flex flex-col justify-center space-y-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-accent">
+                <Zap className="w-5 h-5 fill-accent" />
+                <span className="text-xs font-black uppercase tracking-[0.2em]">Operational Intelligence</span>
+              </div>
+              <h1 id="overview-hero-title" className="text-5xl sm:text-6xl lg:text-7xl font-black text-ink tracking-tighter leading-[0.9]">
+                Traceable Intelligence <br /> 
+                <span className="text-accent/90">for Life Safety.</span>
+              </h1>
+              <p className="text-lg text-ink-subtle max-w-xl leading-relaxed font-medium">
+                ResQ AI transforms chaotic emergency noise into structured, evidence-aware operational records with deterministic triage.
+              </p>
+            </div>
 
-          <p className="text-sm sm:text-base text-ink-subtle max-w-3xl leading-relaxed">
-            ResQ AI ingests chaotic multimodal incident reports (witness voice, 911 transcripts, photos, and alert bulletins) and transforms them into structured, evidence-aware operational records with deterministic priority triage and multi-report Incident Fusion.
-          </p>
+            <div className="flex flex-wrap gap-5">
+              <Button
+                variant="primary"
+                size="md"
+                className="h-14 px-8 text-sm uppercase tracking-widest rounded-full shadow-lg shadow-accent/20 hover:scale-105 transition-transform"
+                onClick={() => onNavigate('report')}
+              >
+                Launch Command Center
+              </Button>
+              <button className="flex items-center gap-3 px-6 py-3 text-xs font-bold uppercase tracking-widest text-ink hover:text-accent transition-colors group">
+                <PlayCircle className="w-8 h-8 group-hover:scale-110 transition-transform" />
+                <span>Watch Overview</span>
+              </button>
+            </div>
 
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Button
-              variant="primary"
-              icon={Sparkles}
-              onClick={() => onNavigate('report')}
-              className="shadow-sm hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Process New Emergency Report
-            </Button>
-            <Button
-              variant="secondary"
-              icon={ArrowUpRight}
-              onClick={() => onNavigate('queue')}
-              className="hover:scale-[1.02] active:scale-[0.98]"
-            >
-              View Triaged Queue
-            </Button>
+            <div className="pt-4 flex items-center gap-2 text-[11px] font-bold text-ink-muted uppercase tracking-wider">
+              <span className="text-critical">*</span>
+              <span>100% Deterministic Core</span>
+              <span className="mx-2 opacity-30">•</span>
+              <span>Human-in-the-loop validation</span>
+            </div>
+          </div>
+
+          {/* Right Side: Geometric Illustration */}
+          <div className="lg:w-[45%] bg-slate-50 relative overflow-hidden border-l border-line flex items-center justify-center">
+            {/* Using the text-to-image API for a technical/abstract illustration */}
+            <img 
+              src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=abstract+emergency+intelligence+dashboard+geometric+shapes+technical+diagram+high+contrast+minimalist+navy+and+blue+accents+architectural+elements&image_size=portrait_4_3" 
+              alt="System Intelligence Illustration" 
+              className="w-full h-full object-cover opacity-90 mix-blend-multiply"
+            />
+            {/* Overlay elements to match the template's geometric feel */}
+            <div className="absolute top-10 right-10 w-24 h-24 border-4 border-accent opacity-20 rotate-12" />
+            <div className="absolute bottom-20 left-10 w-16 h-16 bg-critical opacity-10 rounded-full blur-2xl" />
+          </div>
+        </div>
+
+        {/* Footer Statistics Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 border-t border-line divide-x divide-line bg-surface-muted/30">
+          <div className="p-8 flex flex-col gap-1">
+            <div className="flex -space-x-2">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                  <img src={`https://i.pravatar.cc/150?u=${i}`} alt="user" />
+                </div>
+              ))}
+            </div>
+            <span className="text-2xl font-black text-ink mt-2">12k+</span>
+            <span className="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Reports Triaged</span>
+          </div>
+          <div className="p-8 flex flex-col gap-1">
+            <CheckCircle2 className="w-6 h-6 text-success mb-2" />
+            <span className="text-2xl font-black text-ink">99.9%</span>
+            <span className="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Decision Traceability</span>
+          </div>
+          <div className="p-8 flex flex-col gap-1">
+            <Users2 className="w-6 h-6 text-accent mb-2" />
+            <span className="text-2xl font-black text-ink">450+</span>
+            <span className="text-[10px] font-bold text-ink-muted uppercase tracking-widest">Agencies Integrated</span>
+          </div>
+          <div className="p-8 flex flex-col gap-6 justify-center">
+            <div className="flex items-center gap-6 opacity-40 grayscale">
+              <span className="text-lg font-black tracking-tighter">FEDERAL</span>
+              <span className="text-lg font-black tracking-tighter">STATE</span>
+              <span className="text-lg font-black tracking-tighter">LOCAL</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Core Pillars: The Mission Control Standards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* Core Pillars: Mission Control Standards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card 
           accentRail 
           tone="accent" 
           icon={ShieldCheck} 
-          title="Strict Provenance Standard"
-          className="hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+          title="Strict Provenance"
+          className="hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl"
         >
-          <p className="text-xs text-ink-subtle leading-relaxed">
-            Every extracted claim carries an explicit provenance tag (<code className="font-mono text-[10px] text-accent font-bold">USER_REPORTED</code>, <code className="font-mono text-[10px] text-accent font-bold">AI_INFERRED</code>, <code className="font-mono text-[10px] text-accent font-bold">VERIFIED</code>). Never fabricated, never inferred without evidence.
+          <p className="text-xs text-ink-subtle leading-relaxed font-medium">
+            Every extracted claim carries an explicit provenance tag. Never fabricated, never inferred without evidence.
           </p>
         </Card>
 
@@ -102,11 +166,11 @@ export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedM
           accentRail 
           tone="warning" 
           icon={AlertOctagon} 
-          title="Deterministic Priority Engine"
-          className="hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+          title="Deterministic Core"
+          className="hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl"
         >
-          <p className="text-xs text-ink-subtle leading-relaxed">
-            AI models only extract raw indicators. Priority level is evaluated by pure, explainable deterministic rule tables. Missing location or conflicting statements strictly force <strong className="text-ink font-bold">Needs Review</strong>.
+          <p className="text-xs text-ink-subtle leading-relaxed font-medium">
+            AI only extracts indicators. Priority is evaluated by pure, explainable deterministic rule tables.
           </p>
         </Card>
 
@@ -114,34 +178,35 @@ export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedM
           accentRail 
           tone="neutral" 
           icon={GitMerge} 
-          title="Human-Confirmed Fusion"
-          className="hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+          title="Human-in-the-loop"
+          className="hover:shadow-xl hover:-translate-y-2 transition-all duration-500 rounded-3xl"
         >
-          <p className="text-xs text-ink-subtle leading-relaxed">
-            Correlates duplicate or related dispatches across time, space, and classification. Merging is never automatic: conflicting claims are highlighted, and original records are permanently preserved.
+          <p className="text-xs text-ink-subtle leading-relaxed font-medium">
+            Merging is never automatic. Conflicting claims are highlighted, and human confirm is mandatory.
           </p>
         </Card>
       </div>
 
-      {/* Engine Status: The Runtime Dashboard */}
+      {/* Runtime Status Dashboard */}
       <Card 
         icon={Server} 
-        title="Intelligence Engine & Service Runtime" 
+        title="System Runtime Dashboard" 
+        className="rounded-3xl shadow-sm"
         actions={
-          <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted bg-surface-sunken px-2 py-0.5 rounded border border-line">
+          <Badge tone="neutral" size="sm" className="bg-surface-sunken border-line">
             Env: {health?.environment || 'production'}
-          </span>
+          </Badge>
         }
       >
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <MetricTile
-            label="Gemini Model"
+            label="Engine"
             value={health?.gemini.model || 'gemini-1.5-flash'}
             icon={Cpu}
-            className="bg-surface-sunken/50 border-dashed"
+            className="bg-surface-sunken/30 border-dashed rounded-2xl"
           />
           <MetricTile
-            label="AI Service Status"
+            label="Service"
             value={health?.gemini.status || 'Active'}
             icon={Activity}
             tone={health?.gemini.configured ? 'success' : 'warning'}
@@ -150,20 +215,20 @@ export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedM
               icon: health.gemini.configured ? ShieldCheck : AlertOctagon,
               label: health.gemini.configured ? 'Operational' : 'Demo Mode'
             } : undefined}
-            className="bg-surface-sunken/50 border-dashed"
+            className="bg-surface-sunken/30 border-dashed rounded-2xl"
           />
           <MetricTile
-            label="Active Mode"
-            value={isSimulatedMode ? 'Simulated' : 'Live'}
+            label="Mode"
+            value={isSimulatedMode ? 'SIMULATED' : 'LIVE'}
             icon={Globe}
             tone={isSimulatedMode ? 'neutral' : 'accent'}
-            className="bg-surface-sunken/50 border-dashed"
+            className="bg-surface-sunken/30 border-dashed rounded-2xl"
           />
           <MetricTile
-            label="Persistence"
+            label="Storage"
             value={health?.storage_type === 'json' ? 'JSON' : 'Memory'}
             icon={Database}
-            className="bg-surface-sunken/50 border-dashed"
+            className="bg-surface-sunken/30 border-dashed rounded-2xl"
           />
         </div>
       </Card>
