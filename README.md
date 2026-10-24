@@ -5,31 +5,19 @@
 [![Gemini API](https://img.shields.io/badge/Google%20GenAI-Official%20SDK-4285F4.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
 
-> **Built for PromptWars Hackathon 2026**  
+
 > *Transforming messy emergency reports into verifiable, evidence-aware incident records with deterministic prioritization, multi-report Incident Fusion, and exportable action intelligence.*  
 > **Mandate:** ResQ AI is decision support, not an automated dispatch system.
 
 ---
 
-## 🚨 Persistent Operational Notice
+## Persistent Operational Notice
 **In immediate danger, contact local emergency services now. Do not wait for AI analysis.**  
 ResQ AI provides analytical decision support for emergency managers; it does not replace official emergency services. Official regional hotlines: **United States: 911** &bull; **India: 112 / NDMA 1078** &bull; **European Union / UK: 112 / 999**.
 
 ---
 
-## 🏆 Feature to Judging Criteria Mapping
-
-| Judging Criterion | Implemented Capabilities in ResQ AI | Technical Evidence & Verification |
-| :--- | :--- | :--- |
-| **Problem-Statement Alignment** | Turns chaotic text, voice transcripts, and scene photos into actionable intelligence; clarifies uncertainties and conflicting witness statements. | Pure deterministic rule engine; structured evidence panel; zero hallucinated dispatches. |
-| **Meaningful Google Services** | 1. Official `@google/genai` multimodal extraction (`responseSchema`).<br>2. Google Search Grounding for official meteorological verification (`groundingMetadata`).<br>3. Cloud Run deployment configuration & Dockerfile.<br>4. Geocoding / Maps fallback support. | Strict separation of extraction and search calls; absence of search metadata cleanly yields "Verification unavailable". |
-| **Code Quality & Architecture** | Monorepo structure (`packages/shared`, `apps/backend`, `apps/frontend`) with clean domain layer separation. Double Zod schema validation. | Fully typed TypeScript throughout; zero `any` shortcuts in domain logic; repository pattern with separate demo and real stores. |
-| **Security & Privacy** | `GEMINI_API_KEY` strictly server-only. True magic-byte + MIME + size validation on uploads. Delimited prompt-injection defense. Rate-limiting & Helmet. | Zero API keys in frontend bundles; no PII or upload contents logged; audit logs contain only sanitized action records. |
-| **Efficiency** | In-memory SHA-256 hash cache prevents redundant Gemini invocations for identical inputs. Client idempotency keys prevent duplicate saves. | Sub-millisecond cached responses; minimal dependency footprint; optimized Tailwind CSS and Vite production bundle. |
-| **Testing Rigor** | 39 automated tests covering the Section H requirements (unit, supertest integration, React Testing Library, and axe-core accessibility checks). | 100% test pass rate reported from genuine terminal command executions (`npm run test --workspaces`). |
-| **Accessibility (axe-core audited)** | Semantic landmarks, accessible headings, keyboard-trapped drawers with Escape focus return, visible teal focus rings, `aria-live` announcements. | Badges carry text plus icon (never color alone); passes an automated `axe-core` audit of core components (0 critical/serious violations); responsive at 360px. *This is automated tooling coverage, not a formal WCAG 2.2 AA conformance audit.* |
-
----
+ 
 
 ## ⚡ Quick Start & Run Commands
 
@@ -94,38 +82,6 @@ npm run build
 | **`@resq-ai/backend`** | 24 | **24 / 24 Passed** | Multimodal Zod validation, genuine magic-byte check, spoofed signature rejection, oversized upload rejection, unconfigured Gemini graceful error handling, fusion preview/confirmation audit retention, **idempotent fusion (repeat/reversed/self-pair blocked without data corruption)**, strict CORS allowlist, admin-token authorization for destructive endpoints, non-greedy location extraction and structural location confidence, action report export, idempotency replay. |
 | **`@resq-ai/frontend`** | 6 | **6 / 6 Passed** | Provenance badges (text + icon), priority badges, persistent emergency notice, navigation shell, focus-trapped drawer with Escape key handling, and automated `axe-core` accessibility audit (0 critical/serious violations). |
 | **Total** | **39** | **39 / 39 Passed** | **100% Green** |
-
----
-
-## 🔍 Definition of Done Verification Summary
-
-1. **Type Checks & Linting:** Passed across `@resq-ai/shared`, `@resq-ai/backend`, and `@resq-ai/frontend`.
-2. **Automated Tests:** 39/39 tests executed and passing cleanly via Vitest (shared 9, backend 24, frontend 6).
-3. **Production Build:** Vite production bundle generated successfully (`dist/assets/index-*.js`, ~248 kB, gzip: ~68 kB) with zero TypeScript or bundling errors.
-4. **Live Development Servers:**
-   - Backend running on `http://localhost:3001` (`STORAGE_TYPE=json`).
-   - Frontend served by Vite (default `http://localhost:5173`, falling back to the next free port such as `http://localhost:5174` when 5173 is busy) with a reverse-proxy to `/api`.
-5. **Live Gemini Extraction Tested:**
-   - Multimodal extraction tested against real Google Gemini API with `gemini-3.5-flash-lite`.
-   - Structured JSON output with `USER_REPORTED` and `AI_INFERRED` provenance badges returned in ~5 seconds.
-6. **Incident Fusion Workflow Tested:**
-   - Candidate detection found 70% similarity match between demo flood incidents.
-   - Side-by-side diff highlighted location and casualty discrepancies.
-   - Explicit human confirmation merged reports while preserving all original author IDs, timestamps, and claims.
-7. **Exportable Action Report:**
-   - Generated both structured JSON and downloadable Markdown.
-   - Decision checklist with interactive completion states.
-   - Decision support recommendations strictly separated from executed actions.
-8. **Negative & Security Testing:**
-   - **Empty input:** Rejected with HTTP 400 (`EMPTY_INPUT`).
-   - **Spoofed MIME / Magic Bytes:** Upload of text file disguised as `image/png` rejected with HTTP 400 (`FILE_REJECTED`).
-   - **Oversized files:** 11MB file upload rejected with HTTP 400 (`FILE_UPLOAD_ERROR`).
-   - **Idempotency:** Replaying POST with same `Idempotency-Key` returned original record without duplication.
-   - **Key Isolation:** Verified that `GEMINI_API_KEY` is never bundled into frontend assets or returned by API endpoints.
-9. **Services Not Directly Testable:**
-   - *Google Search Grounding:* Returned HTTP 429 quota exhaustion on provided key; backend truthfully fell back to `status: "UNAVAILABLE"` without fabricating fake sources.
-   - *Google Maps API:* `GOOGLE_MAPS_API_KEY` not configured; app cleanly displays normalized textual addresses without fake maps.
-   - *Remote Cloud Run Deployment:* Requires remote GCP project authentication; local multi-stage Docker build config is verified.
 
 ---
 
@@ -205,5 +161,4 @@ gcloud run deploy resq-ai \
 
 ---
 
-## 📄 License
-This project is open-source under the MIT License.
+
