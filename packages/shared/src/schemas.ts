@@ -325,3 +325,41 @@ export const RescueExplainRequestSchema = z.discriminatedUnion('kind', [
 ]);
 
 export type RescueExplainRequest = z.infer<typeof RescueExplainRequestSchema>;
+
+/* ------------------------------------------------------------------ */
+/* Chain — relief supply distribution API (SIMULATED)                  */
+/* ------------------------------------------------------------------ */
+
+export const CommodityIdSchema = z.enum(['WATER', 'FOOD', 'MEDICAL_KIT', 'SHELTER_KIT']);
+
+/** Stock (or a stock override) expressed per commodity. */
+export const CommodityStockSchema = z.object({
+  WATER: z.number().int().nonnegative().max(1_000_000),
+  FOOD: z.number().int().nonnegative().max(1_000_000),
+  MEDICAL_KIT: z.number().int().nonnegative().max(100_000),
+  SHELTER_KIT: z.number().int().nonnegative().max(100_000)
+});
+
+export const SupplyScenarioSchema = z.object({
+  blocked_edge_keys: z.array(BlockedEdgeKeySchema).max(20).optional(),
+  unavailable_depot_ids: z.array(SimIdSchema).max(10).optional(),
+  /** Per-depot overrides; every field is optional so a scenario can restock one line only. */
+  depot_stock_overrides: z.record(SimIdSchema, CommodityStockSchema.partial()).optional(),
+  planning_horizon_days: z.number().int().min(1).max(14).optional()
+});
+
+export const SupplyPlanRequestSchema = z.object({
+  scenario: SupplyScenarioSchema.optional()
+});
+
+/**
+ * A human decision on a proposed distribution plan. Like every other
+ * consequential recommendation, it is recorded with the coordinator's own note
+ * and the signature of the plan they actually saw.
+ */
+export const SupplyDecisionRequestSchema = z.object({
+  decision: RescueDecisionSchema,
+  coordinator_note: SafeTextSchema(500, 3),
+  plan_signature: SafeTextSchema(2000, 3),
+  active_constraints: z.array(SafeTextSchema(300, 3)).max(30).optional()
+});

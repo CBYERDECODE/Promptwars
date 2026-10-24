@@ -5,13 +5,16 @@ import {
   PriorityLevel, 
   IncidentReportExport,
   AllocationStrategy,
+  Commodity,
   PlanDetail,
   PlanScenario,
   RadarDetailResult,
   ReplayDetail,
   ReplayOverride,
   RescueExplainRequest,
-  SimulationDataset
+  SimulationDataset,
+  SupplyPlanDetail,
+  SupplyScenario
 } from '@resq-ai/shared';
 
 const API_BASE = '/api';
@@ -428,4 +431,66 @@ export function postDecision(
   const headers: Record<string, string> = { 'Idempotency-Key': idempotencyKey };
   if (adminToken) headers['X-Admin-Token'] = adminToken;
   return postJson<RescueDecisionRecord>('/rescue/decision', body, headers);
+}
+
+/* ------------------------------------------------------------------ */
+/* Chain — relief supply distribution API (SIMULATED), Tier 3          */
+/* ------------------------------------------------------------------ */
+/*
+ * Backed entirely by the deterministic `computeSupplyPlan` engine in
+ * `@resq-ai/shared`. No model is involved on this surface, and no function here
+ * dispatches anything: a distribution proposal becomes an action only when a
+ * human records a decision against it.
+ */
+
+/** `POST /api/chain/plan` — a distribution proposal over the modelled road network. */
+export interface ChainPlanResponse {
+  is_simulated: true;
+  label: string;
+  notice: string;
+  framing: string;
+  result: SupplyPlanDetail;
+  commodities: Commodity[];
+  parameters: Record<string, number>;
+}
+
+/** A human decision on a distribution proposal. */
+export type ChainDecision = RescueDecision;
+
+/** Recorded human decision returned by `POST /api/chain/decision`. */
+export interface ChainDecisionRecord {
+  is_simulated: true;
+  decision: ChainDecision;
+  coordinator_note: string;
+  plan_signature: string;
+  active_constraints: string[];
+  recorded_at: string;
+  log_entry_id: string;
+  notice: string;
+  /** Present and true when an identical request was served from the server cache. */
+  replayed?: true;
+}
+
+export function postChainPlan(body: { scenario?: SupplyScenario } = {}): Promise<ChainPlanResponse> {
+  return postJson<ChainPlanResponse>('/chain/plan', body);
+}
+
+/**
+ * Record a human decision on a distribution proposal. The idempotency key makes
+ * a double-click harmless: the server returns the original record instead of
+ * writing a second audit entry.
+ */
+export function postChainDecision(
+  body: {
+    decision: ChainDecision;
+    coordinator_note: string;
+    plan_signature: string;
+    active_constraints?: string[];
+  },
+  idempotencyKey: string,
+  adminToken?: string
+): Promise<ChainDecisionRecord> {
+  const headers: Record<string, string> = { 'Idempotency-Key': idempotencyKey };
+  if (adminToken) headers['X-Admin-Token'] = adminToken;
+  return postJson<ChainDecisionRecord>('/chain/decision', body, headers);
 }

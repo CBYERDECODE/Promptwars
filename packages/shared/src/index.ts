@@ -9,3 +9,4 @@ export * from './allocation.js';
 export * from './replay.js';
 export * from './simulation.js';
 export * from './pulse.js';
+export * from './supply.js';

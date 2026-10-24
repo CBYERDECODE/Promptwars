@@ -34,6 +34,9 @@ const CrisisReplay = React.lazy(() =>
 const RescuePulseView = React.lazy(() =>
   import('./views/rescue/RescuePulseView').then(m => ({ default: m.RescuePulseView }))
 );
+const ReliefChain = React.lazy(() =>
+  import('./views/rescue/ReliefChain').then(m => ({ default: m.ReliefChain }))
+);
 const DemoTour = React.lazy(() =>
   import('./views/rescue/DemoTour').then(m => ({ default: m.DemoTour }))
 );
@@ -197,6 +200,8 @@ export const App: React.FC = () => {
             {activeTab === 'replay' && <CrisisReplay />}
 
             {activeTab === 'pulse' && <RescuePulseView />}
+
+            {activeTab === 'chain' && <ReliefChain />}
           </Suspense>
         </main>
       </div>

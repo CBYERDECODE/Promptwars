@@ -20,6 +20,7 @@ import { createIncidentsRouter } from './routes/incidents.js';
 import { createSourcesRouter } from './routes/sources.js';
 import { createActivityRouter } from './routes/activity.js';
 import { createRescueRouter } from './routes/rescue.js';
+import { createChainRouter } from './routes/chain.js';
 import { errorHandler, AppError } from './middleware/errorHandler.js';
 import { config, isOriginAllowed } from './config.js';
 
@@ -110,6 +111,7 @@ export function createApp(
   app.use('/api/sources', createSourcesRouter(groundingService, repo, activityLog));
   app.use('/api/activity', createActivityRouter(activityLog));
   app.use('/api/rescue', createRescueRouter(rescueNarrativeService, activityLog));
+  app.use('/api/chain', createChainRouter(activityLog));
 
   // Serve static frontend in production if built
   const possibleDistPaths = [

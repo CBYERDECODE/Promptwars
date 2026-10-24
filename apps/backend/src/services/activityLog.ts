@@ -12,6 +12,9 @@ export interface ActivityLogEntry {
     | 'RESCUE_PLAN_APPROVED'
     | 'RESCUE_PLAN_REJECTED'
     | 'RESCUE_PLAN_MODIFIED'
+    | 'CHAIN_PLAN_APPROVED'
+    | 'CHAIN_PLAN_REJECTED'
+    | 'CHAIN_PLAN_MODIFIED'
     | 'DEMO_RESET';
   incident_id?: string;
   summary: string; // sanitized summary, strictly free of personal data or raw upload bytes
