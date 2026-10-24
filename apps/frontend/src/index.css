@@ -79,3 +79,41 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ── 3D Disaster Twin map markers ─────────────────────────────────────── */
+.twin-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.3rem;
+  border-radius: 0.45rem;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  font: 700 11px/1 ui-sans-serif, system-ui, sans-serif;
+  box-shadow: 0 4px 12px -4px rgb(15 23 42 / 0.45);
+  user-select: none;
+}
+.twin-marker--hospital { background: #dc2626; }
+.twin-marker--shelter { background: #16a34a; }
+.twin-marker--fire { background: #d97706; }
+.twin-marker--team { background: #0f766e; border-radius: 999px; }
+.twin-marker--ambulance { background: #1d4ed8; cursor: pointer; }
+.twin-marker--ambulance.is-unavailable { background: #94a3b8; }
+.twin-marker--incident {
+  background: #dc2626;
+  border-radius: 999px;
+  width: 1.9rem;
+  height: 1.9rem;
+  font-size: 13px;
+  cursor: pointer;
+  animation: twin-pulse 2.4s ease-out infinite;
+}
+.twin-marker--incident.sev-5, .twin-marker--incident.sev-4 { background: #b91c1c; }
+.twin-marker.is-selected { outline: 3px solid #2563eb; outline-offset: 2px; }
+@keyframes twin-pulse {
+  0% { box-shadow: 0 0 0 0 rgb(220 38 38 / 0.55); }
+  70% { box-shadow: 0 0 0 12px rgb(220 38 38 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(220 38 38 / 0); }
+}
