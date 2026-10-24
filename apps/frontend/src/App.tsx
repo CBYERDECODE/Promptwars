@@ -40,6 +40,9 @@ const ReliefChain = React.lazy(() =>
 const DemoTour = React.lazy(() =>
   import('./views/rescue/DemoTour').then(m => ({ default: m.DemoTour }))
 );
+const TwinDisasterView = React.lazy(() =>
+  import('./views/TwinDisasterView').then(m => ({ default: m.TwinDisasterView }))
+);
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
@@ -110,7 +113,11 @@ export const App: React.FC = () => {
       />
 
       {/* Shell Layout: Sidebar + Main Content Area */}
-      <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto">
+      <div
+        className={`flex-1 flex flex-col md:flex-row w-full mx-auto ${
+          activeTab === 'twin' ? 'max-w-[1600px]' : 'max-w-7xl'
+        }`}
+      >
         <Sidebar
           activeTab={activeTab}
           onTabChange={(tab) => {
@@ -207,6 +214,8 @@ export const App: React.FC = () => {
             {activeTab === 'pulse' && <RescuePulseView />}
 
             {activeTab === 'chain' && <ReliefChain />}
+
+            {activeTab === 'twin' && <TwinDisasterView />}
           </Suspense>
         </main>
       </div>
