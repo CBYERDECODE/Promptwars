@@ -1,9 +1,13 @@
 import React from 'react';
-import { Sparkles, PhoneCall, CheckCircle, XCircle } from 'lucide-react';
+import { Sparkles, PhoneCall, CheckCircle, XCircle, Wifi, WifiOff } from 'lucide-react';
 import { HealthResponse } from '../api/client';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { Badge } from '../ui';
 
 interface Props {
   health: HealthResponse | null;
+  /** The health probe failed, so AI status is genuinely unknown rather than "off". */
+  healthUnavailable?: boolean;
   isSimulatedMode: boolean;
   onToggleSimulated: () => void;
   onOpenHotlineModal: () => void;
@@ -11,11 +15,15 @@ interface Props {
 
 export const Header: React.FC<Props> = ({
   health,
+  healthUnavailable = false,
   isSimulatedMode,
   onToggleSimulated,
   onOpenHotlineModal
 }) => {
   const geminiReady = health?.gemini.configured;
+  const online = useOnlineStatus();
+  // "Unknown" is not "not configured": say which one it is (icon + label, never colour alone).
+  const serviceUnknown = healthUnavailable && !geminiReady;
 
   return (
     <header className="bg-white border-b border-slate-200 shadow-xs px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-30">
@@ -28,10 +36,7 @@ export const Header: React.FC<Props> = ({
             <path d="M12 8v4" stroke="#2563EB" strokeWidth="2.5" />
             <circle cx="12" cy="16" r="1.2" fill="#2563EB" />
           </svg>
-          <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-600"></span>
-          </span>
+          <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-blue-600 border-2 border-white" aria-hidden="true" />
         </div>
 
         <div>
@@ -55,12 +60,21 @@ export const Header: React.FC<Props> = ({
         <button
           onClick={onOpenHotlineModal}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 transition shadow-xs"
-          aria-label="Immediate Danger Emergency Numbers"
+          title="Emergency numbers for immediate danger"
         >
-          <PhoneCall className="w-3.5 h-3.5 text-red-600 animate-pulse" aria-hidden="true" />
+          <PhoneCall className="w-3.5 h-3.5 text-red-600" aria-hidden="true" />
           <span className="hidden md:inline">In Danger?</span>
           <span>Emergency Contacts</span>
         </button>
+
+        {/* Connectivity — persistent, because a coordinator must always know
+            whether what they are reading can still be recomputed. Announced
+            politely so a drop-out is not missed mid-task. */}
+        <div role="status" aria-live="polite">
+          <Badge tone={online ? 'success' : 'warning'} icon={online ? Wifi : WifiOff} srPrefix="Connection">
+            {online ? 'Online' : 'Offline'}
+          </Badge>
+        </div>
 
         {/* Gemini Service Status Pill */}
         <div
@@ -69,7 +83,13 @@ export const Header: React.FC<Props> = ({
               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
               : 'bg-amber-50 text-amber-900 border-amber-200'
           }`}
-          title={geminiReady ? `Connected: ${health?.gemini.model}` : 'Gemini key unconfigured'}
+          title={
+            geminiReady
+              ? `Connected: ${health?.gemini.model}`
+              : serviceUnknown
+              ? 'The service health check could not be reached'
+              : 'Gemini key unconfigured'
+          }
         >
           {geminiReady ? (
             <>
@@ -80,7 +100,9 @@ export const Header: React.FC<Props> = ({
           ) : (
             <>
               <XCircle className="w-3.5 h-3.5 text-amber-600" aria-hidden="true" />
-              <span className="text-amber-800 font-semibold">Demo Mode</span>
+              <span className="text-amber-800 font-semibold">
+                {serviceUnknown ? 'Service status unknown' : 'Demo Mode'}
+              </span>
             </>
           )}
         </div>

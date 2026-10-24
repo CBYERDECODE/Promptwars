@@ -16,6 +16,8 @@ import {
   RefreshCw, 
   Sparkles 
 } from 'lucide-react';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { ErrorState, OfflineState } from '../ui';
 
 interface Props {
   isSimulatedMode: boolean;
@@ -28,6 +30,8 @@ export const IncidentFusionView: React.FC<Props> = ({
   onFusionConfirmed,
   announce
 }) => {
+  const online = useOnlineStatus();
+
   const [incidents, setIncidents] = useState<IncidentRecord[]>([]);
   const [selectedPrimaryId, setSelectedPrimaryId] = useState<string>('');
   const [candidates, setCandidates] = useState<any[]>([]);
@@ -39,6 +43,9 @@ export const IncidentFusionView: React.FC<Props> = ({
   const [isMerging, setIsMerging] = useState(false);
   const [mergeSuccess, setMergeSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // A failed candidate scan is not the same as a scan that found nothing.
+  const [candidatesError, setCandidatesError] = useState<string | null>(null);
+  const [retryNonce, setRetryNonce] = useState(0);
 
   // Load available incidents
   useEffect(() => {
@@ -49,7 +56,9 @@ export const IncidentFusionView: React.FC<Props> = ({
           setSelectedPrimaryId(res.items[0].id);
         }
       })
-      .catch(err => console.error(err));
+      .catch(() =>
+        setErrorMsg('The incident list could not be read, so no fusion candidates can be offered.')
+      );
   }, [isSimulatedMode]);
 
   // Load candidates when primary selected
@@ -59,16 +68,19 @@ export const IncidentFusionView: React.FC<Props> = ({
     setPreviewData(null);
     setMergeSuccess(false);
     setErrorMsg(null);
+    setCandidatesError(null);
 
     fetchFusionCandidates(selectedPrimaryId)
       .then(res => {
         setCandidates(res.candidates || []);
       })
-      .catch(err => {
-        console.error(err);
-      })
+      .catch(() =>
+        setCandidatesError(
+          'Candidate scoring could not be run. This is a failed scan, not evidence that no related reports exist.'
+        )
+      )
       .finally(() => setLoadingCandidates(false));
-  }, [selectedPrimaryId]);
+  }, [selectedPrimaryId, retryNonce]);
 
   const handleSelectCandidate = async (secondaryId: string) => {
     try {
@@ -112,6 +124,7 @@ export const IncidentFusionView: React.FC<Props> = ({
 
   return (
     <div className="space-y-6">
+      {!online && <OfflineState message="You are offline. You can still review a preview already on screen, but fusion candidates cannot be re-scanned and no merge can be recorded until the connection returns." />}
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
           <span>Incident Fusion Engine</span>
@@ -156,7 +169,15 @@ export const IncidentFusionView: React.FC<Props> = ({
           </div>
         )}
 
-        {!loadingCandidates && candidates.length === 0 && (
+        {!loadingCandidates && candidatesError && (
+          <ErrorState
+            title="Could not score fusion candidates"
+            message={candidatesError}
+            onRetry={() => setRetryNonce(nonce => nonce + 1)}
+          />
+        )}
+
+        {!loadingCandidates && !candidatesError && candidates.length === 0 && (
           <div className="p-8 rounded-xl bg-white border border-slate-200 text-center text-xs text-slate-500 shadow-xs">
             No candidate correlations detected for the selected anchor incident.
           </div>

@@ -8,13 +8,20 @@ import {
   Search, 
   RefreshCw 
 } from 'lucide-react';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { CardSkeleton, ErrorState, OfflineState } from '../ui';
 
 interface Props {
   announce: (msg: string) => void;
 }
 
 export const VerifiedSourcesView: React.FC<Props> = ({ announce }) => {
+  const online = useOnlineStatus();
+
   const [sourcesData, setSourcesData] = useState<any | null>(null);
+  const [loadingSources, setLoadingSources] = useState(true);
+  // A failed read is not the same as "no agencies configured" — keep them apart.
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Claim verification tester
   const [testClaim, setTestClaim] = useState('Flash flood warning for Maplewood River Basin');
@@ -24,11 +31,18 @@ export const VerifiedSourcesView: React.FC<Props> = ({ announce }) => {
   const [verifyResult, setVerifyResult] = useState<any | null>(null);
 
   const loadSources = async () => {
+    setLoadingSources(true);
+    setLoadError(null);
     try {
       const res = await fetchSources();
       setSourcesData(res);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      setLoadError(
+        err?.message ||
+          'The grounding source directory could not be read. Claim verification status below is therefore unknown, not confirmed.'
+      );
+    } finally {
+      setLoadingSources(false);
     }
   };
 
@@ -61,6 +75,7 @@ export const VerifiedSourcesView: React.FC<Props> = ({ announce }) => {
 
   return (
     <div className="space-y-6">
+      {!online && <OfflineState message="You are offline. Cached source records stay readable, but claim verification against live sources is unavailable until the connection returns." />}
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex flex-wrap items-center gap-2">
           <span>Verified Sources &amp; Grounding</span>
@@ -72,6 +87,15 @@ export const VerifiedSourcesView: React.FC<Props> = ({ announce }) => {
           Verify critical claims against official meteorological and civil defense agencies.
         </p>
       </div>
+
+      {loadingSources && <CardSkeleton label="Loading grounding source directory" rows={2} />}
+      {!loadingSources && loadError && (
+        <ErrorState
+          title="Grounding source directory unavailable"
+          message={loadError}
+          onRetry={loadSources}
+        />
+      )}
 
       {/* Live Grounding Test Workbench */}
       <div className="p-5 rounded-xl bg-white border border-slate-200 space-y-4 shadow-xs">
@@ -123,7 +147,11 @@ export const VerifiedSourcesView: React.FC<Props> = ({ announce }) => {
 
           <div className="flex flex-wrap justify-between items-center gap-3 pt-1">
             <span className="text-[11px] text-slate-500">
-              {sourcesData?.service_configured
+              {loadingSources
+                ? 'Checking grounding service status…'
+                : loadError
+                ? 'Grounding service status unknown: the source directory could not be read.'
+                : sourcesData?.service_configured
                 ? 'Gemini Search Grounding tool is ready.'
                 : 'API key not detected: will return explicit "Verification unavailable".'}
             </span>

@@ -21,6 +21,8 @@ import {
   RefreshCw, 
   GitMerge 
 } from 'lucide-react';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { OfflineState } from '../ui';
 
 interface Props {
   isSimulatedMode: boolean;
@@ -33,6 +35,8 @@ export const IncidentQueueView: React.FC<Props> = ({
   onSelectIncident,
   announce
 }) => {
+  const online = useOnlineStatus();
+
   const [data, setData] = useState<PaginatedIncidents | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +93,7 @@ export const IncidentQueueView: React.FC<Props> = ({
 
   return (
     <div className="space-y-5">
+      {!online && <OfflineState message="You are offline. The queue below is the last copy this device read. Filters and sorting still work on it, but nothing can be re-fetched or updated." />}
       {/* View Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>

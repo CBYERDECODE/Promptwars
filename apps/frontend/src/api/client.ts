@@ -206,14 +206,50 @@ export async function verifyClaimWithGrounding(claim: string, location?: string,
   return res.json();
 }
 
-export async function fetchActivityLogs(): Promise<{ entries: any[] }> {
-  const res = await fetch(`${API_BASE}/activity`);
-  return res.json();
+/**
+ * One sanitized entry from the human-decision audit trail. Mirrors the server's
+ * `ActivityLogEntry`; it never contains raw caller text or uploaded bytes.
+ */
+export interface ActivityLogEntry {
+  id: string;
+  timestamp: string;
+  action_type: string;
+  incident_id?: string;
+  summary: string;
 }
 
-export async function resetDemoData(): Promise<void> {
-  const res = await fetch(`${API_BASE}/incidents/reset-demo`, { method: 'POST' });
-  if (!res.ok) throw new Error('Failed to reset demo data');
+/** `GET /api/activity` — the audit trail, newest first. */
+export async function fetchActivityLogs(): Promise<{ entries: ActivityLogEntry[] }> {
+  // Routed through `readJson` so a failing request raises instead of silently
+  // resolving to an empty list, which the UI would misreport as "nothing logged".
+  return readJson<{ entries: ActivityLogEntry[] }>(await fetch(`${API_BASE}/activity`));
+}
+
+/**
+ * `DELETE /api/activity` — purges the audit trail.
+ *
+ * Destructive, so the server guards it with `requireAdmin`. The token is sent as
+ * `X-Admin-Token`, never persisted, and the server's refusal is surfaced rather
+ * than swallowed: the caller must be able to tell a real purge from a rejection.
+ */
+export async function clearActivityLogs(adminToken?: string): Promise<void> {
+  const headers: Record<string, string> = {};
+  if (adminToken) headers['X-Admin-Token'] = adminToken;
+  const res = await fetch(`${API_BASE}/activity`, { method: 'DELETE', headers });
+  await readJson<{ message: string }>(res);
+}
+
+/**
+ * `POST /api/incidents/reset-demo` — restores the fictional demo dataset.
+ *
+ * Destructive, and guarded by `requireAdmin` on the server, so it takes the same
+ * coordinator token as a log purge and surfaces a refusal instead of hiding it.
+ */
+export async function resetDemoData(adminToken?: string): Promise<void> {
+  const headers: Record<string, string> = {};
+  if (adminToken) headers['X-Admin-Token'] = adminToken;
+  const res = await fetch(`${API_BASE}/incidents/reset-demo`, { method: 'POST', headers });
+  await readJson<{ message: string }>(res);
 }
 
 /* ------------------------------------------------------------------ */

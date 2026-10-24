@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { HealthResponse, resetDemoData } from '../api/client';
-import { ShieldAlert, Sparkles, RefreshCw, CheckCircle2, HardDrive, Key } from 'lucide-react';
+import { ApiError, HealthResponse, resetDemoData } from '../api/client';
+import { ShieldAlert, Sparkles, RefreshCw, CheckCircle2, HardDrive, Key, Lock } from 'lucide-react';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { Button, Dialog, ErrorState, OfflineState } from '../ui';
 
 interface Props {
   health: HealthResponse | null;
@@ -17,22 +19,36 @@ export const SettingsView: React.FC<Props> = ({
   onRefreshHealth,
   announce
 }) => {
+  const online = useOnlineStatus();
   const [resetting, setResetting] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [adminToken, setAdminToken] = useState('');
+
+  const closeReset = () => {
+    if (resetting) return;
+    setResetOpen(false);
+  };
 
   const handleReset = async () => {
-    if (!confirm('Are you sure you want to reset demo data back to default initial records?')) {
-      return;
-    }
-
+    setResetting(true);
+    setResetError(null);
     try {
-      setResetting(true);
-      await resetDemoData();
+      await resetDemoData(adminToken.trim() || undefined);
+      setResetOpen(false);
       setResetSuccess(true);
       announce('Demo dataset reset successfully.');
       setTimeout(() => setResetSuccess(false), 3000);
     } catch (err) {
-      console.error(err);
+      // A refusal is shown, never swallowed: the server guards this endpoint with
+      // requireAdmin, so "nothing happened" is the common failure and must be visible.
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : 'The demo dataset was not reset: the server could not be reached.';
+      setResetError(message);
+      announce(`Demo reset failed. ${message}`);
     } finally {
       setResetting(false);
     }
@@ -40,6 +56,10 @@ export const SettingsView: React.FC<Props> = ({
 
   return (
     <div className="max-w-3xl space-y-6">
+      {!online && (
+        <OfflineState message="You are offline. Settings shown below are the last values this device read, and none of the administrative actions on this page can reach the server." />
+      )}
+
       <div className="flex flex-wrap justify-between items-center gap-3">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -154,23 +174,77 @@ export const SettingsView: React.FC<Props> = ({
             </p>
           </div>
 
-          <button
-            onClick={handleReset}
-            disabled={resetting}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-red-50 text-slate-700 hover:text-red-700 border border-slate-300 hover:border-red-300 transition shrink-0 ml-4 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin' : ''}`} />
-            <span>{resetting ? 'Resetting...' : 'Reset Default Demo Incidents'}</span>
-          </button>
+          <Button variant="danger" icon={RefreshCw} onClick={() => setResetOpen(true)} disabled={!online}>
+            Reset Default Demo Incidents
+          </Button>
         </div>
 
         {resetSuccess && (
-          <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" />
+          <div
+            role="status"
+            className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2"
+          >
+            <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
             <span>Default demo incidents reloaded successfully!</span>
           </div>
         )}
+
+        {resetError && (
+          <ErrorState
+            title="Demo data was not reset"
+            message={resetError}
+            onRetry={() => setResetOpen(true)}
+          />
+        )}
       </div>
+
+      <Dialog
+        open={resetOpen}
+        onClose={closeReset}
+        title="Reset the demo dataset?"
+        description="Every stored incident is replaced with the default fictional scenarios. Recorded decisions are not restored afterwards."
+        footer={
+          <>
+            <Button onClick={closeReset} disabled={resetting}>
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              icon={RefreshCw}
+              onClick={handleReset}
+              loading={resetting}
+              loadingLabel="Resetting the demo dataset"
+            >
+              Reset demo data
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-3">
+          <p className="text-xs text-ink-muted leading-5">
+            This is an administrative action, so the server requires a coordinator token. Without it the request is
+            refused and the stored incidents are left untouched.
+          </p>
+
+          <div className="rounded-card border border-line bg-surface-muted px-3 py-2">
+            <label htmlFor="reset-admin-token" className="flex items-center gap-2 text-[11px] font-semibold text-ink-muted">
+              <Lock className="h-3 w-3 shrink-0" aria-hidden="true" />
+              Coordinator token
+            </label>
+            <input
+              id="reset-admin-token"
+              type="password"
+              autoComplete="off"
+              value={adminToken}
+              onChange={event => setAdminToken(event.target.value)}
+              className="mt-2 w-full rounded-control border border-line-strong bg-white px-3 py-2 text-xs text-ink"
+            />
+            <p className="mt-1 text-[11px] text-ink-subtle">
+              Sent as the <code className="font-mono">X-Admin-Token</code> header. It is never stored in the browser.
+            </p>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import {
 import { PriorityBadge } from './PriorityBadge';
 import { ProvenanceBadge } from './ProvenanceBadge';
 import { fetchIncidentReport, patchIncident } from '../api/client';
+import { ErrorState } from '../ui';
 import { 
   X, 
   Download, 
@@ -32,6 +33,10 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
   const [report, setReport] = useState<IncidentReportExport | null>(null);
   const [copied, setCopied] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  // A failed report export is not an empty report; a failed status write is not a
+  // successful one. Both are surfaced rather than logged and forgotten.
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -50,9 +55,14 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
   // Load exportable report when report tab opened
   useEffect(() => {
     if (incident && activeTab === 'report') {
+      setReportError(null);
       fetchIncidentReport(incident.id)
         .then(data => setReport(data))
-        .catch(err => console.error('Failed to load report:', err));
+        .catch(() =>
+          setReportError(
+            'The exportable report could not be generated. This is a failed request, not an empty report.'
+          )
+        );
     }
   }, [incident, activeTab]);
 
@@ -61,10 +71,14 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
   const handleStatusChange = async (newStatus: IncidentStatus) => {
     try {
       setIsUpdatingStatus(true);
+      setStatusError(null);
       const updated = await patchIncident(incident.id, { status: newStatus });
       onIncidentUpdated(updated);
-    } catch (err) {
-      console.error('Failed to update status:', err);
+    } catch (err: any) {
+      setStatusError(
+        err?.message ||
+          'The status change was not saved. The incident still shows its previous status.'
+      );
     } finally {
       setIsUpdatingStatus(false);
     }
@@ -159,6 +173,12 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
             <span>Reported {new Date(incident.reported_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
+
+        {statusError && (
+          <div className="px-5 pt-3">
+            <ErrorState title="Status not updated" message={statusError} />
+          </div>
+        )}
 
         {/* Tabs Bar */}
         <div className="flex border-b border-slate-200 bg-slate-50 px-4 gap-1 text-xs font-semibold overflow-x-auto">
@@ -394,20 +414,26 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopyMarkdown}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-2xs transition"
+                    disabled={!report}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-2xs transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
                     <span>{copied ? 'Copied' : 'Copy Markdown'}</span>
                   </button>
                   <button
                     onClick={handleDownloadMarkdown}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition shadow-xs"
+                    disabled={!report}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download .MD</span>
                   </button>
                 </div>
               </div>
+
+              {reportError && (
+                <ErrorState title="Report export unavailable" message={reportError} />
+              )}
 
               {report && (
                 <>

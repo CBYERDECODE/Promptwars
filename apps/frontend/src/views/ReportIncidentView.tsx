@@ -16,6 +16,8 @@ import {
   CheckCircle2, 
   Send 
 } from 'lucide-react';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { OfflineState } from '../ui';
 
 interface Props {
   isSimulatedMode: boolean;
@@ -55,6 +57,8 @@ export const ReportIncidentView: React.FC<Props> = ({
   onIncidentCreated,
   announce
 }) => {
+  const online = useOnlineStatus();
+
   const [reportText, setReportText] = useState('');
   const [locationOverride, setLocationOverride] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -101,8 +105,11 @@ export const ReportIncidentView: React.FC<Props> = ({
         };
 
         recognition.onerror = (event: any) => {
-          console.error('Speech recognition error:', event.error);
           setIsRecording(false);
+          setErrorMsg(
+            `Voice input stopped: ${event?.error || 'the microphone reported an error'}. You can keep typing the report.`
+          );
+          announce('Voice input stopped.');
         };
 
         recognition.onend = () => {
@@ -113,9 +120,10 @@ export const ReportIncidentView: React.FC<Props> = ({
         recognitionRef.current = recognition;
         setIsRecording(true);
         announce('Listening for voice report...');
-      } catch (err) {
-        console.error('Speech error:', err);
-        setErrorMsg('Could not initialize microphone.');
+      } catch (err: any) {
+        setErrorMsg(
+          `Could not start the microphone: ${err?.message || 'the browser blocked voice input'}. You can keep typing the report.`
+        );
       }
     }
   };
@@ -205,6 +213,7 @@ export const ReportIncidentView: React.FC<Props> = ({
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
+      {!online && <OfflineState message="You are offline. A report you write now is kept on this device and marked as not delivered, and on-demand AI extraction is unavailable until the connection returns." />}
       {/* View Header */}
       <div>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">

@@ -1,5 +1,7 @@
 import React from 'react';
 import { HealthResponse } from '../api/client';
+import { useOnlineStatus } from '../hooks/useRescueData';
+import { OfflineState } from '../ui';
 import { 
   AlertOctagon, 
   GitMerge, 
@@ -16,8 +18,11 @@ interface Props {
 }
 
 export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedMode }) => {
+  const online = useOnlineStatus();
+
   return (
     <div className="space-y-6">
+      {!online && <OfflineState message="You are offline. The overview figures shown are the last values this device read and cannot be refreshed until the connection returns." />}
       {/* Hero Problem Statement & System Status */}
       <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-blue-50/80 via-white to-slate-50 border border-blue-200 shadow-xs space-y-3.5 relative overflow-hidden">
         <div className="flex items-center justify-between flex-wrap gap-2">

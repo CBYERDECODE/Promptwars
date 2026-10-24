@@ -44,6 +44,8 @@ const DemoTour = React.lazy(() =>
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
   const [health, setHealth] = useState<HealthResponse | null>(null);
+  // True only when the health probe itself failed — distinct from "AI not configured".
+  const [healthUnavailable, setHealthUnavailable] = useState(false);
   const [isSimulatedMode, setIsSimulatedMode] = useState<boolean>(true); // default to safe demo mode
   const [isHotlineModalOpen, setIsHotlineModalOpen] = useState(false);
   const [selectedIncident, setSelectedIncident] = useState<IncidentRecord | null>(null);
@@ -58,11 +60,14 @@ export const App: React.FC = () => {
     try {
       const data = await fetchHealth();
       setHealth(data);
+      setHealthUnavailable(false);
       if (data.gemini.configured) {
         setIsSimulatedMode(false);
       }
-    } catch (err) {
-      console.warn('Backend health check initial attempt:', err);
+    } catch {
+      // The probe failed. We cannot know whether live AI is configured, so we
+      // stay in the safe simulated default and say so, instead of guessing.
+      setHealthUnavailable(true);
     }
   };
 
@@ -98,6 +103,7 @@ export const App: React.FC = () => {
       {/* Main Header */}
       <Header
         health={health}
+        healthUnavailable={healthUnavailable}
         isSimulatedMode={isSimulatedMode}
         onToggleSimulated={handleToggleSimulated}
         onOpenHotlineModal={() => setIsHotlineModalOpen(true)}
