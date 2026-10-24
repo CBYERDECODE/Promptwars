@@ -13,8 +13,7 @@ import {
   Rewind,
   Radio,
   Truck,
-  Play,
-  Box
+  Play
 } from 'lucide-react';
 
 export type NavTab = 
@@ -31,8 +30,7 @@ export type NavTab =
   | 'replay'
   | 'pulse'
   | 'chain'
-  | 'demo'
-  | 'twin';
+  | 'demo';
 
 interface Props {
   activeTab: NavTab;
@@ -44,7 +42,6 @@ export const Sidebar: React.FC<Props> = ({ activeTab, onTabChange, queueCount })
   const navItems: Array<{ id: NavTab; label: string; icon: React.FC<{ className?: string }> }> = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
     { id: 'demo', label: 'Guided Demo', icon: Play },
-    { id: 'twin', label: '3D Disaster Twin', icon: Box },
     { id: 'radar', label: 'Victims Radar', icon: Radar },
     { id: 'fairrescue', label: 'FairRescue', icon: Scale },
     { id: 'brain', label: 'RescueBrain', icon: Brain },
