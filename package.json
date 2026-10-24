@@ -9,6 +9,7 @@
   "scripts": {
     "build": "npm run build -w @resq-ai/shared && npm run build -w @resq-ai/backend && npm run build -w @resq-ai/frontend",
     "build:frontend": "npm run build -w @resq-ai/shared && npm run build -w @resq-ai/frontend",
+    "preview": "npm run preview -w @resq-ai/frontend",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
     "typecheck": "npm run typecheck --workspaces",
