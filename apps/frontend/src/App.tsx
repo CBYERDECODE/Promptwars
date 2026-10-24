@@ -129,6 +129,7 @@ export const App: React.FC = () => {
           {activeTab === 'overview' && (
             <OverviewView
               onNavigate={(tab) => setActiveTab(tab)}
+              incidentCount={health?.stats.total_incidents_stored}
             />
           )}
 

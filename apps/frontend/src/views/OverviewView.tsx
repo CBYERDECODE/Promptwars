@@ -13,9 +13,10 @@ import { InnovationGlobe } from '../components/InnovationGlobe';
 
 interface Props {
   onNavigate: (tab: any) => void;
+  incidentCount?: number;
 }
 
-export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
+export const OverviewView: React.FC<Props> = ({ onNavigate, incidentCount }) => {
   const online = useOnlineStatus();
 
   return (
@@ -85,7 +86,7 @@ export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
 
           {/* 3D Visualization Area */}
           <div className="flex-1 min-h-[400px] lg:min-h-0 bg-slate-50/30 p-4 lg:p-8">
-            <InnovationGlobe />
+            <InnovationGlobe incidentCount={incidentCount} />
           </div>
         </div>
       </section>

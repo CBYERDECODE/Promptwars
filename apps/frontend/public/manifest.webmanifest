@@ -1,0 +1,25 @@
+{
+  "name": "ResQ AI Intelligence",
+  "short_name": "ResQ AI",
+  "description": "Explainable and fair emergency rescue intelligence platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=professional+rescue+ai+app+icon+blue+and+white+minimalist+modern&image_size=square",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=rescue+ai+dashboard+ui+screenshot+premium+design&image_size=landscape_16_9",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}
