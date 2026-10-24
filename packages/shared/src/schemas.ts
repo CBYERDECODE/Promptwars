@@ -188,3 +188,140 @@ export const FusionConfirmRequestSchema = z.object({
   resolution_notes: z.string().optional(),
   override_fields: z.record(z.any()).optional()
 });
+
+/* ------------------------------------------------------------------ */
+/* Explainable Rescue Intelligence API (SIMULATED)                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Characters that must never survive into a rendered explanation: ASCII control
+ * codes plus bidirectional-override code points. Bidi overrides can visually
+ * re-order text, which would let a client make an audit trail read backwards.
+ */
+const UNSAFE_RENDERED_CHARS = /[\u0000-\u0009\u000B-\u001F\u007F\u200E\u200F\u202A-\u202E\u2066-\u2069]/g;
+
+/** Strip control characters and collapse whitespace, preserving single newlines. */
+export function sanitizeRenderedText(value: string): string {
+  return value
+    .replace(UNSAFE_RENDERED_CHARS, ' ')
+    .replace(/[^\S\n]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
+ * Text that may be echoed back into a UI or an audit trail. Sanitised first, then
+ * length-bounded. React escapes on render; this stops unsafe characters from
+ * ever entering storage in the first place.
+ */
+export function SafeTextSchema(maxLength: number, minimum = 1) {
+  return z
+    .string()
+    .transform(value => sanitizeRenderedText(value))
+    .pipe(
+      z
+        .string()
+        .min(minimum, `Text must be at least ${minimum} character(s) after sanitising.`)
+        .max(maxLength, `Text must be at most ${maxLength} characters.`)
+    );
+}
+
+/** Slug used for simulated node/zone/unit/incident identifiers. */
+export const SimIdSchema = z
+  .string()
+  .regex(/^[a-z0-9][a-z0-9_-]{0,39}$/, 'Identifiers must be short lowercase slugs.');
+
+/**
+ * Undirected road-segment key (`"<node>|<node>"`, alphabetically sorted).
+ * Validated strictly because the label is rendered inside the plan's
+ * "active constraints" explanation.
+ */
+export const BlockedEdgeKeySchema = z
+  .string()
+  .regex(/^[a-z0-9][a-z0-9_-]{0,39}\|[a-z0-9][a-z0-9_-]{0,39}$/, 'Edge keys look like "nodea|nodeb".');
+
+export const AllocationStrategySchema = z.enum(['FASTEST', 'SEVERITY_FIRST', 'COVERAGE_BALANCED']);
+
+export const SimIncidentInputSchema = z.object({
+  id: SimIdSchema,
+  zone_id: SimIdSchema,
+  node_id: SimIdSchema,
+  severity: z.enum(['Critical', 'High', 'Moderate', 'Low']),
+  title: SafeTextSchema(200, 3),
+  people_at_risk: z.number().int().nonnegative().max(1_000_000).nullable().default(null),
+  reported_at: SafeTimestampSchema
+});
+
+export const PlanScenarioSchema = z.object({
+  unavailable_unit_ids: z.array(SimIdSchema).max(20).optional(),
+  blocked_edge_keys: z.array(BlockedEdgeKeySchema).max(20).optional(),
+  extra_incidents: z.array(SimIncidentInputSchema).max(10).optional(),
+  hospital_at_capacity: z.boolean().optional(),
+  forced_assignment: z
+    .object({
+      unit_id: SimIdSchema,
+      incident_id: SimIdSchema
+    })
+    .optional()
+});
+
+export const RescueRadarRequestSchema = z.object({
+  blocked_edge_keys: z.array(BlockedEdgeKeySchema).max(20).optional(),
+  window_hours: z.number().positive().max(72).optional()
+});
+
+export const RescuePlansRequestSchema = z.object({
+  scenario: PlanScenarioSchema.optional()
+});
+
+export const RescuePlanRequestSchema = z.object({
+  strategy: AllocationStrategySchema,
+  scenario: PlanScenarioSchema.optional()
+});
+
+export const RescueReplayRequestSchema = z.object({
+  strategy: AllocationStrategySchema,
+  override: z.object({
+    unit_id: SimIdSchema,
+    incident_id: SimIdSchema
+  }),
+  scenario: PlanScenarioSchema.optional()
+});
+
+export const RescueDecisionSchema = z.enum(['APPROVED', 'REJECTED', 'MODIFIED']);
+
+/**
+ * A human decision on a proposed plan. Every consequential recommendation must be
+ * recorded this way, with the coordinator's own note, so the audit trail shows
+ * who accepted which plan and why.
+ */
+export const RescueDecisionRequestSchema = z.object({
+  decision: RescueDecisionSchema,
+  strategy: AllocationStrategySchema,
+  coordinator_note: SafeTextSchema(500, 3),
+  /** Deterministic signature of the plan the coordinator saw (unit→incident list). */
+  plan_signature: SafeTextSchema(2000, 3),
+  active_constraints: z.array(SafeTextSchema(300, 3)).max(30).optional()
+});
+
+/** Structured output requested from Gemini when explaining deterministic results. */
+export const RescueNarrativeOutputSchema = z.object({
+  explanation: SafeTextSchema(1200, 20),
+  verification_suggestions: z.array(SafeTextSchema(240, 3)).max(5).default([])
+});
+
+/**
+ * Narrative request.
+ *
+ * The client sends the SAME deterministic inputs it would send to the plain
+ * endpoints; the server recomputes the engine result and then asks the model
+ * only to *explain* it. The model therefore never receives a plan it could have
+ * chosen — it can only describe what the deterministic core already decided.
+ */
+export const RescueExplainRequestSchema = z.discriminatedUnion('kind', [
+  z.object({ kind: z.literal('RADAR'), request: RescueRadarRequestSchema.default({}) }),
+  z.object({ kind: z.literal('PLAN'), request: RescuePlanRequestSchema }),
+  z.object({ kind: z.literal('REPLAY'), request: RescueReplayRequestSchema })
+]);
+
+export type RescueExplainRequest = z.infer<typeof RescueExplainRequestSchema>;

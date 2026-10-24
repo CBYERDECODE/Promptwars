@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Header } from './components/Header';
 import { Sidebar, NavTab } from './components/Sidebar';
 import { EmergencyDisclaimer } from './components/EmergencyDisclaimer';
@@ -10,8 +10,30 @@ import { IncidentFusionView } from './views/IncidentFusionView';
 import { VerifiedSourcesView } from './views/VerifiedSourcesView';
 import { ActivityLogView } from './views/ActivityLogView';
 import { SettingsView } from './views/SettingsView';
+import { CardSkeleton, ToastProvider } from './ui';
 import { fetchHealth, HealthResponse } from './api/client';
 import { IncidentRecord } from '@resq-ai/shared';
+
+/**
+ * The rescue-intelligence views are route-split so the emergency reporting
+ * surfaces (report/queue/fusion) load fast on a slow connection — a first
+ * responder must never wait on the decision-support bundle.
+ */
+const InvisibleVictimsRadar = React.lazy(() =>
+  import('./views/rescue/InvisibleVictimsRadar').then(m => ({ default: m.InvisibleVictimsRadar }))
+);
+const FairRescue = React.lazy(() =>
+  import('./views/rescue/FairRescue').then(m => ({ default: m.FairRescue }))
+);
+const RescueBrain = React.lazy(() =>
+  import('./views/rescue/RescueBrain').then(m => ({ default: m.RescueBrain }))
+);
+const CrisisReplay = React.lazy(() =>
+  import('./views/rescue/CrisisReplay').then(m => ({ default: m.CrisisReplay }))
+);
+const DemoTour = React.lazy(() =>
+  import('./views/rescue/DemoTour').then(m => ({ default: m.DemoTour }))
+);
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<NavTab>('overview');
@@ -49,7 +71,8 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <ToastProvider>
+      <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Screen Reader Live Announcements */}
       <div 
         aria-live="polite" 
@@ -146,6 +169,30 @@ export const App: React.FC = () => {
               announce={announce}
             />
           )}
+
+          {/*
+            Rescue-intelligence surfaces. Each route is code-split and, while the
+            chunk resolves, shows the same skeleton every view uses — so a slow
+            connection never produces a blank or shifting layout.
+          */}
+          <Suspense fallback={<CardSkeleton label="Loading rescue intelligence" rows={6} />}>
+            {activeTab === 'demo' && (
+              <DemoTour
+                onExit={() => {
+                  setActiveTab('overview');
+                  announce('Guided demo closed');
+                }}
+              />
+            )}
+
+            {activeTab === 'radar' && <InvisibleVictimsRadar />}
+
+            {activeTab === 'fairrescue' && <FairRescue />}
+
+            {activeTab === 'brain' && <RescueBrain />}
+
+            {activeTab === 'replay' && <CrisisReplay />}
+          </Suspense>
         </main>
       </div>
 
@@ -163,6 +210,7 @@ export const App: React.FC = () => {
       <footer role="contentinfo" className="bg-white border-t border-slate-200 text-slate-500 text-xs py-3.5 px-6 text-center">
         ResQ AI Decision Support &bull; Built for PromptWars Hackathon 2026 &bull; Strict Provenance &amp; Deterministic Triage
       </footer>
-    </div>
+      </div>
+    </ToastProvider>
   );
 };

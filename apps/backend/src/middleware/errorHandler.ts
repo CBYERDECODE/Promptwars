@@ -24,6 +24,29 @@ export class AppError extends Error {
   }
 }
 
+/**
+ * Robust ZodError detection.
+ *
+ * A plain `instanceof ZodError` is not reliable here: schemas are validated both
+ * by backend source (bundled by the test/build toolchain) and by the compiled
+ * `@resq-ai/shared` package, which can load a *different* module instance of zod.
+ * The two copies then expose distinct `ZodError` classes, so `instanceof` fails
+ * and a validation error would be reported as a 500. Duck-typing the documented
+ * shape keeps the intended 400 behaviour in every environment.
+ */
+function isZodError(err: any): boolean {
+  if (err instanceof ZodError) return true;
+  return Boolean(err) && typeof err === 'object' && err.name === 'ZodError' && Array.isArray(err.issues);
+}
+
+function zodIssueDetails(err: any): Array<{ path: string; message: string }> {
+  const issues: any[] = Array.isArray(err?.issues) ? err.issues : Array.isArray(err?.errors) ? err.errors : [];
+  return issues.map(issue => ({
+    path: Array.isArray(issue?.path) ? issue.path.join('.') : String(issue?.path ?? ''),
+    message: typeof issue?.message === 'string' ? issue.message : 'Invalid value.'
+  }));
+}
+
 export function errorHandler(
   err: any,
   _req: Request,
@@ -46,12 +69,12 @@ export function errorHandler(
   }
 
   // Handle Zod validation errors
-  if (err instanceof ZodError) {
+  if (isZodError(err)) {
     res.status(400).json({
       error: {
         code: 'VALIDATION_ERROR',
         message: 'Request payload validation failed.',
-        details: err.errors.map(e => ({ path: e.path.join('.'), message: e.message })),
+        details: zodIssueDetails(err),
         timestamp
       }
     });

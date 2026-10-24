@@ -6,7 +6,12 @@ import {
   GitMerge, 
   ShieldCheck, 
   History, 
-  Settings 
+  Settings,
+  Radar,
+  Scale,
+  Brain,
+  Rewind,
+  Play
 } from 'lucide-react';
 
 export type NavTab = 
@@ -16,7 +21,12 @@ export type NavTab =
   | 'fusion' 
   | 'sources' 
   | 'activity' 
-  | 'settings';
+  | 'settings'
+  | 'radar'
+  | 'fairrescue'
+  | 'brain'
+  | 'replay'
+  | 'demo';
 
 interface Props {
   activeTab: NavTab;
@@ -27,6 +37,11 @@ interface Props {
 export const Sidebar: React.FC<Props> = ({ activeTab, onTabChange, queueCount }) => {
   const navItems: Array<{ id: NavTab; label: string; icon: React.FC<{ className?: string }> }> = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'demo', label: 'Guided Demo', icon: Play },
+    { id: 'radar', label: 'Victims Radar', icon: Radar },
+    { id: 'fairrescue', label: 'FairRescue', icon: Scale },
+    { id: 'brain', label: 'RescueBrain', icon: Brain },
+    { id: 'replay', label: 'CrisisReplay', icon: Rewind },
     { id: 'report', label: 'Report Incident', icon: FilePlus2 },
     { id: 'queue', label: 'Incident Queue', icon: ListTree },
     { id: 'fusion', label: 'Incident Fusion', icon: GitMerge },
@@ -40,6 +55,12 @@ export const Sidebar: React.FC<Props> = ({ activeTab, onTabChange, queueCount })
       aria-label="Main Navigation" 
       className="w-full md:w-64 bg-white md:min-h-[calc(100vh-61px)] border-r border-slate-200 p-3 flex md:flex-col justify-between shrink-0 overflow-x-auto md:overflow-x-visible shadow-xs"
     >
+      {/*
+        On narrow screens (tested at 360px) the rail becomes a horizontally
+        scrollable strip. Each item keeps its natural width (`shrink-0`) instead
+        of being squeezed to an unreadable sliver, so the labels stay legible and
+        the 44px touch target is preserved.
+      */}
       <div className="flex md:flex-col gap-1 w-full">
         {navItems.map(item => {
           const Icon = item.icon;
@@ -48,7 +69,7 @@ export const Sidebar: React.FC<Props> = ({ activeTab, onTabChange, queueCount })
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-left w-full whitespace-nowrap ${
+              className={`flex min-h-tap shrink-0 items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition text-left md:w-full whitespace-nowrap ${
                 isActive
                   ? 'bg-blue-50 text-blue-700 border border-blue-200 shadow-xs font-semibold'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'

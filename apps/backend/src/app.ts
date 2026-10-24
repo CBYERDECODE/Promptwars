@@ -12,19 +12,22 @@ import { GroundingVerificationService } from './services/groundingVerification.j
 import { ReportGeneratorService } from './services/reportGenerator.js';
 import { FusionService } from './services/fusionService.js';
 import { ActivityLogService } from './services/activityLog.js';
+import { RescueNarrativeService } from './services/rescueNarrative.js';
 import { HashCache } from './utils/hashCache.js';
 import { IdempotencyManager } from './utils/idempotency.js';
 import { createHealthRouter } from './routes/health.js';
 import { createIncidentsRouter } from './routes/incidents.js';
 import { createSourcesRouter } from './routes/sources.js';
 import { createActivityRouter } from './routes/activity.js';
+import { createRescueRouter } from './routes/rescue.js';
 import { errorHandler, AppError } from './middleware/errorHandler.js';
 import { config, isOriginAllowed } from './config.js';
 
 export function createApp(
   customRepo?: IIncidentRepository,
   customGeminiService?: GeminiExtractionService,
-  customGroundingService?: GroundingVerificationService
+  customGroundingService?: GroundingVerificationService,
+  customNarrativeService?: RescueNarrativeService
 ): Express {
   const app = express();
 
@@ -86,6 +89,7 @@ export function createApp(
   const reportGenerator = new ReportGeneratorService();
   const fusionService = new FusionService(repo);
   const activityLog = new ActivityLogService();
+  const rescueNarrativeService = customNarrativeService || new RescueNarrativeService();
   const hashCache = new HashCache(30);
   const idempotencyManager = new IdempotencyManager();
 
@@ -105,6 +109,7 @@ export function createApp(
   );
   app.use('/api/sources', createSourcesRouter(groundingService, repo, activityLog));
   app.use('/api/activity', createActivityRouter(activityLog));
+  app.use('/api/rescue', createRescueRouter(rescueNarrativeService, activityLog));
 
   // Serve static frontend in production if built
   const possibleDistPaths = [

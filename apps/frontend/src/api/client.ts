@@ -3,7 +3,15 @@ import {
   IncidentStatus, 
   IncidentType, 
   PriorityLevel, 
-  IncidentReportExport 
+  IncidentReportExport,
+  AllocationStrategy,
+  PlanDetail,
+  PlanScenario,
+  RadarDetailResult,
+  ReplayDetail,
+  ReplayOverride,
+  RescueExplainRequest,
+  SimulationDataset
 } from '@resq-ai/shared';
 
 const API_BASE = '/api';
@@ -203,4 +211,221 @@ export async function fetchActivityLogs(): Promise<{ entries: any[] }> {
 export async function resetDemoData(): Promise<void> {
   const res = await fetch(`${API_BASE}/incidents/reset-demo`, { method: 'POST' });
   if (!res.ok) throw new Error('Failed to reset demo data');
+}
+
+/* ------------------------------------------------------------------ */
+/* Explainable Rescue Intelligence API (SIMULATED)                     */
+/* ------------------------------------------------------------------ */
+/*
+ * Every endpoint below is backed by the deterministic engines in
+ * `@resq-ai/shared`. `POST /rescue/explain` is the only one that may involve a
+ * model, and it is used strictly to *describe* a result that the server has
+ * already computed. No function here can change an allocation.
+ */
+
+/** Shape of the error envelope returned by every JSON route. */
+interface ApiErrorBody {
+  error?: {
+    code?: string;
+    message?: string;
+    details?: Array<{ path: string; message: string }>;
+  };
+}
+
+/**
+ * Error carrying the server's own code, human message and validation details so
+ * views can render a specific error state instead of a generic failure.
+ */
+export class ApiError extends Error {
+  public readonly status: number;
+  public readonly code: string;
+  public readonly details: Array<{ path: string; message: string }>;
+
+  constructor(
+    status: number,
+    code: string,
+    message: string,
+    details: Array<{ path: string; message: string }> = []
+  ) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+  }
+}
+
+async function readJson<T>(res: Response): Promise<T> {
+  let payload: unknown = null;
+  try {
+    payload = await res.json();
+  } catch {
+    payload = null;
+  }
+  if (!res.ok) {
+    const body = payload as ApiErrorBody | null;
+    throw new ApiError(
+      res.status,
+      body?.error?.code ?? 'REQUEST_FAILED',
+      body?.error?.message ?? `Request failed (${res.status})`,
+      body?.error?.details ?? []
+    );
+  }
+  return payload as T;
+}
+
+async function getJson<T>(path: string): Promise<T> {
+  return readJson<T>(await fetch(`${API_BASE}${path}`));
+}
+
+async function postJson<T>(path: string, body: unknown, headers: Record<string, string> = {}): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...headers },
+    body: JSON.stringify(body)
+  });
+  return readJson<T>(res);
+}
+
+export interface RescueStrategyOption {
+  id: AllocationStrategy;
+  label: string;
+}
+
+/** `GET /api/rescue/dataset` — the SIMULATED dataset plus every algorithm parameter. */
+export interface RescueDatasetResponse {
+  is_simulated: true;
+  label: string;
+  city: string;
+  notice: string;
+  dataset: SimulationDataset;
+  framing: string;
+  replay_banner: string;
+  methods: {
+    strategies: RescueStrategyOption[];
+    radar_weights: Record<string, number>;
+    radar_parameters: Record<string, number>;
+    allocation_parameters: Record<string, number>;
+  };
+}
+
+export interface RescueRadarRequest {
+  blocked_edge_keys?: string[];
+  window_hours?: number;
+}
+
+/** `POST /api/rescue/radar` */
+export interface RadarResponse {
+  is_simulated: true;
+  result: RadarDetailResult;
+  weights: Record<string, number>;
+  parameters: Record<string, number>;
+}
+
+/** `POST /api/rescue/plans` — all three strategies over identical inputs. */
+export interface PlansResponse {
+  is_simulated: true;
+  generated_at: string;
+  dataset_label: string;
+  notice: string;
+  plans: PlanDetail[];
+  parameters: Record<string, number>;
+}
+
+/** `POST /api/rescue/plan` */
+export interface PlanResponse {
+  is_simulated: true;
+  result: PlanDetail;
+  parameters: Record<string, number>;
+}
+
+/** `POST /api/rescue/replay` */
+export interface ReplayResponse {
+  is_simulated: true;
+  result: ReplayDetail;
+}
+
+/** Provenance of a narrative: `GEMINI` when the model answered, `TEMPLATE` on fallback. */
+export interface NarrativeResult {
+  is_simulated: true;
+  kind: 'RADAR' | 'PLAN' | 'REPLAY';
+  source: 'GEMINI' | 'TEMPLATE';
+  explanation: string;
+  verification_suggestions: string[];
+}
+
+/**
+ * `POST /api/rescue/explain`. `result` is always the deterministic engine output
+ * recomputed server-side; `narrative` is descriptive text only.
+ */
+export interface ExplainResponse {
+  is_simulated: true;
+  kind: 'RADAR' | 'PLAN' | 'REPLAY';
+  result: RadarDetailResult | PlanDetail | ReplayDetail;
+  narrative: NarrativeResult;
+}
+
+export type RescueDecision = 'APPROVED' | 'REJECTED' | 'MODIFIED';
+
+/** Recorded human decision returned by `POST /api/rescue/decision`. */
+export interface RescueDecisionRecord {
+  is_simulated: true;
+  decision: RescueDecision;
+  strategy: AllocationStrategy;
+  coordinator_note: string;
+  plan_signature: string;
+  active_constraints: string[];
+  recorded_at: string;
+  log_entry_id: string;
+  notice: string;
+  /** Present and true when an identical request was served from the server cache. */
+  replayed?: true;
+}
+
+export function fetchRescueDataset(): Promise<RescueDatasetResponse> {
+  return getJson<RescueDatasetResponse>('/rescue/dataset');
+}
+
+export function postRadar(body: RescueRadarRequest = {}): Promise<RadarResponse> {
+  return postJson<RadarResponse>('/rescue/radar', body);
+}
+
+export function postPlans(body: { scenario?: PlanScenario } = {}): Promise<PlansResponse> {
+  return postJson<PlansResponse>('/rescue/plans', body);
+}
+
+export function postPlan(body: { strategy: AllocationStrategy; scenario?: PlanScenario }): Promise<PlanResponse> {
+  return postJson<PlanResponse>('/rescue/plan', body);
+}
+
+export function postReplay(body: {
+  strategy: AllocationStrategy;
+  override: ReplayOverride;
+  scenario?: PlanScenario;
+}): Promise<ReplayResponse> {
+  return postJson<ReplayResponse>('/rescue/replay', body);
+}
+
+export function postExplain(body: RescueExplainRequest): Promise<ExplainResponse> {
+  return postJson<ExplainResponse>('/rescue/explain', body);
+}
+
+/**
+ * Record a human decision. The idempotency key makes a double-click harmless:
+ * the server returns the original record instead of writing a second audit entry.
+ */
+export function postDecision(
+  body: {
+    decision: RescueDecision;
+    strategy: AllocationStrategy;
+    coordinator_note: string;
+    plan_signature: string;
+    active_constraints?: string[];
+  },
+  idempotencyKey: string,
+  adminToken?: string
+): Promise<RescueDecisionRecord> {
+  const headers: Record<string, string> = { 'Idempotency-Key': idempotencyKey };
+  if (adminToken) headers['X-Admin-Token'] = adminToken;
+  return postJson<RescueDecisionRecord>('/rescue/decision', body, headers);
 }

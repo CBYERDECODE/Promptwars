@@ -2,21 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Design tokens.
+ *
+ * The Tailwind theme (tailwind.config.js) is the primary token source. These CSS
+ * variables exist for the places Tailwind classes cannot reach: inline SVG
+ * fills/strokes in the dependency-free map, and the fixed "mode" chrome.
+ */
 :root {
   color-scheme: light;
+
+  --resq-surface: #ffffff;
+  --resq-surface-muted: #f8fafc;
+  --resq-line: #e2e8f0;
+  --resq-ink: #0f172a;
+  --resq-ink-muted: #475569;
+  --resq-accent: #2563eb;
+  --resq-critical: #b91c1c;
+  --resq-warning: #b45309;
+  --resq-success: #15803d;
+  --resq-uncertain: #7c3aed;
+
+  /* Motion: subtle only. Long-form values are overridden below for users who
+     ask their OS to reduce motion. */
+  --resq-motion-fast: 150ms;
+  --resq-motion-base: 200ms;
 }
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background-color: #F8FAFC;
-  color: #0F172A;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Metrics must line up in columns so a coordinator can scan them under stress. */
+.tabular-nums,
+[data-metric] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
 }
 
 /* Ensure accessible visible focus states for keyboard navigation */
 *:focus-visible {
-  outline: 2px solid #2563EB !important;
+  outline: 2px solid #2563eb !important;
   outline-offset: 2px !important;
+}
+
+/* Skip link: keyboard users must be able to bypass the nav rail. */
+.resq-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.resq-skip-link:focus {
+  left: 0.75rem;
+  top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #1d4ed8;
+  border: 2px solid #2563eb;
+  box-shadow: 0 8px 24px -8px rgb(15 23 42 / 0.14);
 }
 
 /* Reduced motion preference */
