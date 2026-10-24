@@ -1,35 +1,26 @@
 import React from 'react';
-import { HealthResponse } from '../api/client';
 import { useOnlineStatus } from '../hooks/useRescueData';
 import { 
   Badge, 
   Button, 
   Card, 
-  MetricTile, 
   OfflineState
 } from '../ui';
 import { 
   AlertOctagon, 
   GitMerge, 
   ShieldCheck, 
-  Server,
-  Activity,
-  Cpu,
-  Database,
-  Globe,
-  PlayCircle,
-  Zap,
-  CheckCircle2,
+  PlayCircle, 
+  Zap, 
+  CheckCircle2, 
   Users2
 } from 'lucide-react';
 
 interface Props {
-  health: HealthResponse | null;
   onNavigate: (tab: any) => void;
-  isSimulatedMode: boolean;
 }
 
-export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedMode }) => {
+export const OverviewView: React.FC<Props> = ({ onNavigate }) => {
   const online = useOnlineStatus();
 
   return (
@@ -187,51 +178,6 @@ export const OverviewView: React.FC<Props> = ({ health, onNavigate, isSimulatedM
         </Card>
       </div>
 
-      {/* Runtime Status Dashboard */}
-      <Card 
-        icon={Server} 
-        title="System Runtime Dashboard" 
-        className="rounded-3xl shadow-sm"
-        actions={
-          <Badge tone="neutral" size="sm" className="bg-surface-sunken border-line">
-            Env: {health?.environment || 'production'}
-          </Badge>
-        }
-      >
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <MetricTile
-            label="Engine"
-            value={health?.gemini.model || 'gemini-1.5-flash'}
-            icon={Cpu}
-            className="bg-surface-sunken/30 border-dashed rounded-2xl"
-          />
-          <MetricTile
-            label="Service"
-            value={health?.gemini.status || 'Active'}
-            icon={Activity}
-            tone={health?.gemini.configured ? 'success' : 'warning'}
-            status={health ? {
-              tone: health.gemini.configured ? 'success' : 'warning',
-              icon: health.gemini.configured ? ShieldCheck : AlertOctagon,
-              label: health.gemini.configured ? 'Operational' : 'Demo Mode'
-            } : undefined}
-            className="bg-surface-sunken/30 border-dashed rounded-2xl"
-          />
-          <MetricTile
-            label="Mode"
-            value={isSimulatedMode ? 'SIMULATED' : 'LIVE'}
-            icon={Globe}
-            tone={isSimulatedMode ? 'neutral' : 'accent'}
-            className="bg-surface-sunken/30 border-dashed rounded-2xl"
-          />
-          <MetricTile
-            label="Storage"
-            value={health?.storage_type === 'json' ? 'JSON' : 'Memory'}
-            icon={Database}
-            className="bg-surface-sunken/30 border-dashed rounded-2xl"
-          />
-        </div>
-      </Card>
     </div>
   );
 };

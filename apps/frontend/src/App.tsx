@@ -128,9 +128,7 @@ export const App: React.FC = () => {
         >
           {activeTab === 'overview' && (
             <OverviewView
-              health={health}
               onNavigate={(tab) => setActiveTab(tab)}
-              isSimulatedMode={isSimulatedMode}
             />
           )}
 
