@@ -31,6 +31,9 @@ const RescueBrain = React.lazy(() =>
 const CrisisReplay = React.lazy(() =>
   import('./views/rescue/CrisisReplay').then(m => ({ default: m.CrisisReplay }))
 );
+const RescuePulseView = React.lazy(() =>
+  import('./views/rescue/RescuePulseView').then(m => ({ default: m.RescuePulseView }))
+);
 const DemoTour = React.lazy(() =>
   import('./views/rescue/DemoTour').then(m => ({ default: m.DemoTour }))
 );
@@ -192,6 +195,8 @@ export const App: React.FC = () => {
             {activeTab === 'brain' && <RescueBrain />}
 
             {activeTab === 'replay' && <CrisisReplay />}
+
+            {activeTab === 'pulse' && <RescuePulseView />}
           </Suspense>
         </main>
       </div>

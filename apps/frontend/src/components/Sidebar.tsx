@@ -11,6 +11,7 @@ import {
   Scale,
   Brain,
   Rewind,
+  Radio,
   Play
 } from 'lucide-react';
 
@@ -26,6 +27,7 @@ export type NavTab =
   | 'fairrescue'
   | 'brain'
   | 'replay'
+  | 'pulse'
   | 'demo';
 
 interface Props {
@@ -42,6 +44,7 @@ export const Sidebar: React.FC<Props> = ({ activeTab, onTabChange, queueCount })
     { id: 'fairrescue', label: 'FairRescue', icon: Scale },
     { id: 'brain', label: 'RescueBrain', icon: Brain },
     { id: 'replay', label: 'CrisisReplay', icon: Rewind },
+    { id: 'pulse', label: 'RescuePulse', icon: Radio },
     { id: 'report', label: 'Report Incident', icon: FilePlus2 },
     { id: 'queue', label: 'Incident Queue', icon: ListTree },
     { id: 'fusion', label: 'Incident Fusion', icon: GitMerge },
