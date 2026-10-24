@@ -12,11 +12,11 @@ export const PriorityBadge: React.FC<Props> = ({ priority, className = '' }) => 
     case 'Critical':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide bg-rose-950/80 text-rose-200 border border-rose-700 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-red-50 text-red-800 border border-red-300 ${className}`}
           role="status"
           aria-label="Suggested priority: Critical"
         >
-          <AlertOctagon className="w-3.5 h-3.5 text-rose-400" aria-hidden="true" />
+          <AlertOctagon className="w-3.5 h-3.5 text-red-600 shrink-0" aria-hidden="true" />
           <span>Critical</span>
         </span>
       );
@@ -24,11 +24,11 @@ export const PriorityBadge: React.FC<Props> = ({ priority, className = '' }) => 
     case 'High':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide bg-amber-950/80 text-amber-200 border border-amber-700 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-amber-50 text-amber-900 border border-amber-300 ${className}`}
           role="status"
           aria-label="Suggested priority: High"
         >
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-700 shrink-0" aria-hidden="true" />
           <span>High</span>
         </span>
       );
@@ -36,11 +36,11 @@ export const PriorityBadge: React.FC<Props> = ({ priority, className = '' }) => 
     case 'Moderate':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide bg-yellow-950/80 text-yellow-200 border border-yellow-700 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-yellow-50 text-yellow-900 border border-yellow-300 ${className}`}
           role="status"
           aria-label="Suggested priority: Moderate"
         >
-          <AlertCircle className="w-3.5 h-3.5 text-yellow-400" aria-hidden="true" />
+          <AlertCircle className="w-3.5 h-3.5 text-yellow-700 shrink-0" aria-hidden="true" />
           <span>Moderate</span>
         </span>
       );
@@ -48,11 +48,11 @@ export const PriorityBadge: React.FC<Props> = ({ priority, className = '' }) => 
     case 'Low':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide bg-teal-950/80 text-teal-200 border border-teal-700 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-emerald-50 text-emerald-800 border border-emerald-300 ${className}`}
           role="status"
           aria-label="Suggested priority: Low"
         >
-          <CheckCircle2 className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" aria-hidden="true" />
           <span>Low</span>
         </span>
       );
@@ -61,11 +61,11 @@ export const PriorityBadge: React.FC<Props> = ({ priority, className = '' }) => 
     default:
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wide bg-indigo-950/80 text-indigo-200 border border-indigo-700 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide bg-blue-50 text-blue-900 border border-blue-300 ${className}`}
           role="status"
           aria-label="Suggested priority: Needs review"
         >
-          <HelpCircle className="w-3.5 h-3.5 text-indigo-400" aria-hidden="true" />
+          <HelpCircle className="w-3.5 h-3.5 text-blue-700 shrink-0" aria-hidden="true" />
           <span>Needs review</span>
         </span>
       );

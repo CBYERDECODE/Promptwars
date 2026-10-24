@@ -40,46 +40,46 @@ export const SettingsView: React.FC<Props> = ({
 
   return (
     <div className="max-w-3xl space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-wrap justify-between items-center gap-3">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
             <span>Operational Settings &amp; Runtime</span>
           </h1>
-          <p className="text-sm text-slate-400 mt-0.5">
+          <p className="text-sm text-slate-600 mt-0.5">
             Configure intelligence execution parameters, models, and demo storage controls.
           </p>
         </div>
 
         <button
           onClick={onRefreshHealth}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy-850 hover:bg-navy-800 border border-navy-700 text-xs font-semibold text-slate-300 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-700 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
-          <RefreshCw className="w-3.5 h-3.5 text-teal-400" />
+          <RefreshCw className="w-3.5 h-3.5 text-blue-600" />
           <span>Refresh Health</span>
         </button>
       </div>
 
       {/* Mode Configuration Card */}
-      <div className="p-5 rounded-xl bg-navy-900 border border-navy-800 space-y-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-teal-400" />
+      <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-blue-600" />
           <span>Execution Mode</span>
         </h2>
 
-        <div className="flex justify-between items-center p-3.5 rounded-lg bg-navy-950 border border-navy-800 text-xs">
+        <div className="flex flex-wrap justify-between items-center gap-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 text-xs">
           <div>
-            <div className="font-bold text-white">Simulated Demonstration Mode</div>
-            <p className="text-slate-400 mt-0.5">
+            <div className="font-bold text-slate-900">Simulated Demonstration Mode</div>
+            <p className="text-slate-600 mt-0.5">
               Processes deterministic emergency mock scenarios without requiring external Google Gemini API credits.
             </p>
           </div>
 
           <button
             onClick={onToggleSimulated}
-            className={`px-3 py-1.5 rounded-lg font-bold border transition shrink-0 ml-4 ${
+            className={`px-3 py-1.5 rounded-lg font-bold border transition shrink-0 ml-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
               isSimulatedMode
-                ? 'bg-amber-950 text-amber-200 border-amber-600'
-                : 'bg-teal-950 text-teal-200 border-teal-600'
+                ? 'bg-amber-50 text-amber-800 border-amber-300'
+                : 'bg-emerald-50 text-emerald-800 border-emerald-300'
             }`}
           >
             {isSimulatedMode ? 'SIMULATED (Active)' : 'LIVE MODE (Active)'}
@@ -88,68 +88,68 @@ export const SettingsView: React.FC<Props> = ({
       </div>
 
       {/* Model & AI Runtime Card */}
-      <div className="p-5 rounded-xl bg-navy-900 border border-navy-800 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-          <Key className="w-4 h-4 text-teal-400" />
+      <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <Key className="w-4 h-4 text-blue-600" />
           <span>Gemini Intelligence Services</span>
         </h2>
 
         <div className="space-y-2 text-xs">
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">Gemini Model Identifier:</span>
-            <span className="font-mono font-bold text-teal-300">{health?.gemini.model || 'gemini-2.5-flash'}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">Gemini Model Identifier:</span>
+            <span className="font-mono font-bold text-blue-700">{health?.gemini.model || 'gemini-2.5-flash'}</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">API Key Status:</span>
-            <span className={`font-semibold ${health?.gemini.configured ? 'text-teal-400' : 'text-amber-400'}`}>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">API Key Status:</span>
+            <span className={`font-semibold ${health?.gemini.configured ? 'text-emerald-700' : 'text-amber-800'}`}>
               {health?.gemini.configured ? 'Active on Server (Server-only GEMINI_API_KEY)' : 'Unset (Server running in Demo Mode)'}
             </span>
           </div>
 
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">Search Grounding Verification:</span>
-            <span className="text-slate-200 font-semibold">Separate Grounding Call Tool</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">Search Grounding Verification:</span>
+            <span className="text-slate-900 font-semibold">Separate Grounding Call Tool</span>
           </div>
         </div>
       </div>
 
       {/* Storage and Limits */}
-      <div className="p-5 rounded-xl bg-navy-900 border border-navy-800 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-          <HardDrive className="w-4 h-4 text-teal-400" />
+      <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <HardDrive className="w-4 h-4 text-blue-600" />
           <span>Storage &amp; Quotas</span>
         </h2>
 
         <div className="space-y-2 text-xs">
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">Persistence Store:</span>
-            <span className="font-bold text-white uppercase">{health?.storage_type || 'json file store'}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">Persistence Store:</span>
+            <span className="font-bold text-slate-900 uppercase">{health?.storage_type || 'json file store'}</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">Max Upload File Size:</span>
-            <span className="font-mono text-slate-200 font-bold">10 MB (MIME &amp; Magic-Byte Validated)</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">Max Upload File Size:</span>
+            <span className="font-mono text-slate-900 font-bold">10 MB (MIME &amp; Magic-Byte Validated)</span>
           </div>
 
-          <div className="p-3 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center">
-            <span className="text-slate-400">Active Stored Incidents:</span>
-            <span className="font-mono text-slate-200 font-bold">{health?.stats.total_incidents_stored ?? 4}</span>
+          <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-2">
+            <span className="text-slate-600">Active Stored Incidents:</span>
+            <span className="font-mono text-slate-900 font-bold">{health?.stats.total_incidents_stored ?? 4}</span>
           </div>
         </div>
       </div>
 
       {/* Data Management & Demo Reset */}
-      <div className="p-5 rounded-xl bg-navy-900 border border-navy-800 space-y-3">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-          <ShieldAlert className="w-4 h-4 text-amber-400" />
+      <div className="p-5 rounded-xl bg-white border border-slate-200 shadow-xs space-y-3">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-2">
+          <ShieldAlert className="w-4 h-4 text-amber-600" />
           <span>Demo Data Management</span>
         </h2>
 
-        <div className="p-3.5 rounded-lg bg-navy-950 border border-navy-800 flex justify-between items-center text-xs">
+        <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap justify-between items-center gap-3 text-xs">
           <div>
-            <div className="font-bold text-white">Reset Demo Incidents</div>
-            <p className="text-slate-400 mt-0.5">
+            <div className="font-bold text-slate-900">Reset Demo Incidents</div>
+            <p className="text-slate-600 mt-0.5">
               Restores initial fictional scenarios (Flash flood, Chemical tanker, Blocked road, and Conflicting report).
             </p>
           </div>
@@ -157,7 +157,7 @@ export const SettingsView: React.FC<Props> = ({
           <button
             onClick={handleReset}
             disabled={resetting}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-navy-800 hover:bg-rose-950 text-slate-200 hover:text-rose-200 border border-navy-700 hover:border-rose-800 transition shrink-0 ml-4"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-red-50 text-slate-700 hover:text-red-700 border border-slate-300 hover:border-red-300 transition shrink-0 ml-4 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${resetting ? 'animate-spin' : ''}`} />
             <span>{resetting ? 'Resetting...' : 'Reset Default Demo Incidents'}</span>
@@ -165,7 +165,7 @@ export const SettingsView: React.FC<Props> = ({
         </div>
 
         {resetSuccess && (
-          <div className="p-2.5 rounded-lg bg-emerald-950/70 border border-emerald-800 text-emerald-300 text-xs flex items-center gap-2">
+          <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4" />
             <span>Default demo incidents reloaded successfully!</span>
           </div>

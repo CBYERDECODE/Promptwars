@@ -12,11 +12,11 @@ export const ProvenanceBadge: React.FC<Props> = ({ provenance, className = '' })
     case 'USER_REPORTED':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-sky-950/70 text-sky-300 border border-sky-800 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-sky-50 text-sky-900 border border-sky-300 shadow-2xs ${className}`}
           role="status"
           aria-label="Provenance: User Reported"
         >
-          <User className="w-3.5 h-3.5 text-sky-400" aria-hidden="true" />
+          <User className="w-3.5 h-3.5 text-sky-700" aria-hidden="true" />
           <span>USER_REPORTED</span>
         </span>
       );
@@ -24,11 +24,11 @@ export const ProvenanceBadge: React.FC<Props> = ({ provenance, className = '' })
     case 'AI_INFERRED':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-purple-950/70 text-purple-300 border border-purple-800 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-purple-50 text-purple-900 border border-purple-300 shadow-2xs ${className}`}
           role="status"
           aria-label="Provenance: AI Inferred"
         >
-          <Sparkles className="w-3.5 h-3.5 text-purple-400" aria-hidden="true" />
+          <Sparkles className="w-3.5 h-3.5 text-purple-700" aria-hidden="true" />
           <span>AI_INFERRED</span>
         </span>
       );
@@ -36,11 +36,11 @@ export const ProvenanceBadge: React.FC<Props> = ({ provenance, className = '' })
     case 'VERIFIED':
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-800 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-2xs ${className}`}
           role="status"
           aria-label="Provenance: Verified via retrieved source"
         >
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" aria-hidden="true" />
+          <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
           <span>VERIFIED</span>
         </span>
       );
@@ -49,11 +49,11 @@ export const ProvenanceBadge: React.FC<Props> = ({ provenance, className = '' })
     default:
       return (
         <span
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-amber-950/70 text-amber-300 border border-amber-800 ${className}`}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 text-amber-950 border border-amber-300 shadow-2xs ${className}`}
           role="status"
           aria-label="Provenance: Unverified or Conflicting"
         >
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400" aria-hidden="true" />
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-700" aria-hidden="true" />
           <span>UNVERIFIED_OR_CONFLICTING</span>
         </span>
       );

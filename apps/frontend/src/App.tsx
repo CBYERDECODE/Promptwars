@@ -49,7 +49,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-navy-950 text-slate-100 flex flex-col font-sans selection:bg-teal-600 selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
       {/* Screen Reader Live Announcements */}
       <div 
         aria-live="polite" 
@@ -160,7 +160,7 @@ export const App: React.FC = () => {
       />
 
       {/* Accessible Footer */}
-      <footer role="contentinfo" className="bg-navy-900 border-t border-navy-800 text-slate-500 text-xs py-3 px-6 text-center">
+      <footer role="contentinfo" className="bg-white border-t border-slate-200 text-slate-500 text-xs py-3.5 px-6 text-center">
         ResQ AI Decision Support &bull; Built for PromptWars Hackathon 2026 &bull; Strict Provenance &amp; Deterministic Triage
       </footer>
     </div>

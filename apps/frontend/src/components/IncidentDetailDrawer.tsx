@@ -91,35 +91,35 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
 
   return (
     <div 
-      className="fixed inset-0 z-40 flex justify-end bg-navy-950/70 backdrop-blur-xs transition-opacity"
+      className="fixed inset-0 z-40 flex justify-end bg-slate-900/40 backdrop-blur-xs transition-opacity"
       role="dialog"
       aria-modal="true"
       aria-labelledby="drawer-title"
     >
       <div 
         ref={drawerRef}
-        className="w-full max-w-2xl bg-navy-900 border-l border-navy-700 h-full flex flex-col shadow-2xl text-slate-100 overflow-hidden"
+        className="w-full max-w-2xl bg-white border-l border-slate-200 h-full flex flex-col shadow-2xl text-slate-900 overflow-hidden"
       >
         {/* Drawer Header */}
-        <div className="p-4 sm:p-5 border-b border-navy-800 bg-navy-850 flex items-start justify-between gap-3">
+        <div className="p-4 sm:p-5 border-b border-slate-200 bg-slate-50 flex items-start justify-between gap-3">
           <div>
             <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span className="font-mono text-xs text-slate-400 font-bold bg-navy-950 px-2 py-0.5 rounded border border-navy-700">
+              <span className="font-mono text-xs text-slate-700 font-bold bg-white px-2 py-0.5 rounded border border-slate-200 shadow-2xs">
                 {incident.id}
               </span>
               <PriorityBadge priority={incident.priority.level} />
               {incident.is_simulated && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800">
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 border border-amber-300">
                   Simulated
                 </span>
               )}
               {incident.is_fused && (
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-700 flex items-center gap-1">
-                  <GitMerge className="w-3 h-3" /> Fused Record
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-900 border border-blue-200 flex items-center gap-1">
+                  <GitMerge className="w-3 h-3 text-blue-600" /> Fused Record
                 </span>
               )}
             </div>
-            <h2 id="drawer-title" className="text-lg font-bold text-white leading-snug">
+            <h2 id="drawer-title" className="text-lg font-bold text-slate-900 leading-snug">
               {incident.incident_type}: {incident.summary.slice(0, 75)}...
             </h2>
           </div>
@@ -127,7 +127,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
           <button
             ref={closeBtnRef}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-navy-800 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition"
             aria-label="Close incident detail drawer"
           >
             <X className="w-5 h-5" />
@@ -135,14 +135,14 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
         </div>
 
         {/* Status Bar */}
-        <div className="px-5 py-2.5 bg-navy-950/60 border-b border-navy-800 flex items-center justify-between text-xs flex-wrap gap-2">
+        <div className="px-5 py-2.5 bg-white border-b border-slate-200 flex items-center justify-between text-xs flex-wrap gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 font-medium">Status:</span>
+            <span className="text-slate-500 font-medium">Status:</span>
             <select
               value={incident.status}
               disabled={isUpdatingStatus}
               onChange={(e) => handleStatusChange(e.target.value as IncidentStatus)}
-              className="bg-navy-800 text-teal-300 font-semibold px-2.5 py-1 rounded border border-navy-700 focus:ring-1 focus:ring-teal-400"
+              className="bg-white text-slate-800 font-semibold px-2.5 py-1 rounded-md border border-slate-300 focus:ring-1 focus:ring-blue-600 focus:border-blue-600 shadow-2xs"
               aria-label="Update incident status"
             >
               <option value="NEW">NEW</option>
@@ -154,20 +154,20 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
             </select>
           </div>
 
-          <div className="text-slate-400 flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
+          <div className="text-slate-500 flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
             <span>Reported {new Date(incident.reported_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
           </div>
         </div>
 
         {/* Tabs Bar */}
-        <div className="flex border-b border-navy-800 bg-navy-900 px-4 gap-1 text-xs font-semibold overflow-x-auto">
+        <div className="flex border-b border-slate-200 bg-slate-50 px-4 gap-1 text-xs font-semibold overflow-x-auto">
           <button
             onClick={() => setActiveTab('overview')}
             className={`py-3 px-3 border-b-2 transition whitespace-nowrap ${
               activeTab === 'overview'
-                ? 'border-teal-400 text-teal-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-white shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
             }`}
           >
             Intelligence Overview
@@ -176,8 +176,8 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
             onClick={() => setActiveTab('evidence')}
             className={`py-3 px-3 border-b-2 transition whitespace-nowrap ${
               activeTab === 'evidence'
-                ? 'border-teal-400 text-teal-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-white shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
             }`}
           >
             Evidence &amp; Provenance ({incident.evidence_items.length})
@@ -186,8 +186,8 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
             onClick={() => setActiveTab('report')}
             className={`py-3 px-3 border-b-2 transition whitespace-nowrap ${
               activeTab === 'report'
-                ? 'border-teal-400 text-teal-300'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
+                ? 'border-blue-600 text-blue-700 bg-white shadow-2xs'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
             }`}
           >
             Export Action Report
@@ -197,8 +197,8 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
               onClick={() => setActiveTab('fusion')}
               className={`py-3 px-3 border-b-2 transition whitespace-nowrap ${
                 activeTab === 'fusion'
-                  ? 'border-teal-400 text-teal-300'
-                  : 'border-transparent text-slate-400 hover:text-slate-200'
+                  ? 'border-blue-600 text-blue-700 bg-white shadow-2xs'
+                  : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/60'
               }`}
             >
               Fusion Audit ({incident.merged_incident_ids?.length || 0})
@@ -213,51 +213,51 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
             <div className="space-y-4">
               {/* Executive Summary */}
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                   Executive Summary
                 </h3>
-                <p className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80 leading-relaxed text-slate-200">
+                <p className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 leading-relaxed text-slate-800 shadow-2xs">
                   {incident.summary}
                 </p>
               </div>
 
               {/* Priority Rationale Box */}
-              <div className="p-3.5 rounded-lg bg-navy-950 border border-navy-700/80">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
                     Suggested Priority Analysis
                   </span>
                   <PriorityBadge priority={incident.priority.level} />
                 </div>
-                <ul className="space-y-1.5 text-xs text-slate-300 list-disc list-inside">
+                <ul className="space-y-1.5 text-xs text-slate-700 list-disc list-inside">
                   {incident.priority.reasons.map((reason: string, idx: number) => (
                     <li key={idx} className="leading-relaxed">
                       {reason}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-3 pt-2 border-t border-navy-800 text-[11px] text-slate-400 italic">
+                <p className="mt-3 pt-2 border-t border-slate-200 text-[11px] text-slate-500 italic">
                   {incident.priority.disclaimer}
                 </p>
               </div>
 
               {/* Location details */}
-              <div className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                  <MapPin className="w-4 h-4 text-teal-400" />
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <MapPin className="w-4 h-4 text-blue-600" />
                   <span>Reported Location</span>
                 </div>
                 {incident.reported_location ? (
                   <div>
-                    <p className="font-semibold text-white">{incident.reported_location}</p>
+                    <p className="font-semibold text-slate-900">{incident.reported_location}</p>
                     {incident.normalized_location && (
-                      <p className="text-xs text-slate-400 mt-0.5">
+                      <p className="text-xs text-slate-600 mt-0.5">
                         Normalized: {incident.normalized_location.formatted_address} (Confidence: {incident.normalized_location.confidence})
                       </p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-xs text-amber-300 italic">
+                  <p className="text-xs text-amber-800 italic">
                     Location undetermined. Action pending physical verification.
                   </p>
                 )}
@@ -265,71 +265,71 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
 
               {/* Casualties & People at Risk Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-lg bg-navy-850 border border-navy-700/80">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase text-slate-400 mb-1">
-                    <Users className="w-4 h-4 text-amber-400" />
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase text-slate-500 mb-1">
+                    <Users className="w-4 h-4 text-amber-600" />
                     <span>People At Risk</span>
                   </div>
-                  <p className="text-lg font-bold text-white">
+                  <p className="text-xl font-bold text-slate-900">
                     {incident.people_at_risk.estimated_count ?? 'Undetermined'}
                   </p>
                   {incident.people_at_risk.description && (
-                    <p className="text-xs text-slate-400 mt-1">{incident.people_at_risk.description}</p>
+                    <p className="text-xs text-slate-600 mt-1">{incident.people_at_risk.description}</p>
                   )}
                 </div>
 
-                <div className="p-3 rounded-lg bg-navy-850 border border-navy-700/80">
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase text-slate-400 mb-1">
-                    <AlertTriangle className="w-4 h-4 text-rose-400" />
+                <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase text-slate-500 mb-1">
+                    <AlertTriangle className="w-4 h-4 text-red-600" />
                     <span>Reported Injuries</span>
                   </div>
-                  <p className="text-lg font-bold text-white">
+                  <p className="text-xl font-bold text-slate-900">
                     {incident.reported_injuries.estimated_count ?? 'None confirmed'}
                   </p>
                   {incident.reported_injuries.description && (
-                    <p className="text-xs text-slate-400 mt-1">{incident.reported_injuries.description}</p>
+                    <p className="text-xs text-slate-600 mt-1">{incident.reported_injuries.description}</p>
                   )}
                 </div>
               </div>
 
               {/* Hazard Indicators & Constraints */}
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                   Hazard Indicators
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {incident.hazard_indicators.map((h: string, i: number) => (
-                    <span key={i} className="px-2.5 py-1 rounded text-xs bg-navy-800 text-slate-200 border border-navy-700">
+                    <span key={i} className="px-2.5 py-1 rounded-md text-xs bg-slate-100 text-slate-800 border border-slate-200 font-medium">
                       ⚠️ {h}
                     </span>
                   ))}
                   {incident.hazard_indicators.length === 0 && (
-                    <span className="text-xs text-slate-400">None detected</span>
+                    <span className="text-xs text-slate-500">None detected</span>
                   )}
                 </div>
               </div>
 
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                   Access Constraints
                 </h3>
                 <div className="flex flex-wrap gap-1.5">
                   {incident.access_constraints.map((c: string, i: number) => (
-                    <span key={i} className="px-2.5 py-1 rounded text-xs bg-navy-800 text-slate-200 border border-navy-700">
+                    <span key={i} className="px-2.5 py-1 rounded-md text-xs bg-slate-100 text-slate-800 border border-slate-200 font-medium">
                       🚧 {c}
                     </span>
                   ))}
                   {incident.access_constraints.length === 0 && (
-                    <span className="text-xs text-slate-400">No constraints reported</span>
+                    <span className="text-xs text-slate-500">No constraints reported</span>
                   )}
                 </div>
               </div>
 
               {/* Conflicts & Missing Info Warnings */}
               {incident.conflicting_information.length > 0 && (
-                <div className="p-3.5 rounded-lg bg-amber-950/40 border border-amber-800/80 text-amber-200 text-xs">
+                <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 text-xs shadow-2xs">
                   <div className="font-bold flex items-center gap-2 mb-1">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <AlertTriangle className="w-4 h-4 text-amber-700" />
                     <span>Unresolved Conflicting Statements:</span>
                   </div>
                   <ul className="list-disc list-inside space-y-1">
@@ -345,30 +345,30 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
           {/* TAB 2: EVIDENCE & PROVENANCE */}
           {activeTab === 'evidence' && (
             <div className="space-y-4">
-              <div className="p-3 rounded-lg bg-navy-850 border border-navy-700/80 text-xs text-slate-300">
+              <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-900">
                 <strong>Strict Provenance Standard:</strong> Every intelligence claim is tagged with its verified origin. No simulated verification is presented as real.
               </div>
 
               <div className="space-y-3">
                 {incident.evidence_items.map((ev: EvidenceItem, idx: number) => (
-                  <div key={idx} className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80 space-y-2">
+                  <div key={idx} className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <ProvenanceBadge provenance={ev.provenance} />
-                      <span className="text-xs font-mono text-slate-400">
+                      <span className="text-xs font-mono font-medium text-slate-500">
                         Confidence: {(ev.confidence * 100).toFixed(0)}%
                       </span>
                     </div>
 
-                    <p className="text-sm font-medium text-white">{ev.claim}</p>
+                    <p className="text-sm font-semibold text-slate-900">{ev.claim}</p>
 
                     {ev.source_excerpt && (
-                      <div className="text-xs bg-navy-950 p-2.5 rounded border border-navy-800 text-slate-300 italic">
+                      <div className="text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-200 text-slate-700 italic">
                         &ldquo;{ev.source_excerpt}&rdquo;
                       </div>
                     )}
 
                     {ev.source_url && (
-                      <div className="text-xs text-teal-400">
+                      <div className="text-xs text-blue-600 font-medium">
                         <a href={ev.source_url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                           Source: {ev.source_name || ev.source_url}
                         </a>
@@ -378,7 +378,7 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                 ))}
 
                 {incident.evidence_items.length === 0 && (
-                  <p className="text-xs text-slate-400 italic">No structured evidence claims recorded.</p>
+                  <p className="text-xs text-slate-500 italic">No structured evidence claims recorded.</p>
                 )}
               </div>
             </div>
@@ -388,20 +388,20 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
           {activeTab === 'report' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-3 flex-wrap">
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-600 font-medium">
                   Exportable Decision Support Package (JSON / Markdown)
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopyMarkdown}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-navy-800 hover:bg-navy-700 text-slate-200 border border-navy-700 transition"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-2xs transition"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-teal-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
                     <span>{copied ? 'Copied' : 'Copy Markdown'}</span>
                   </button>
                   <button
                     onClick={handleDownloadMarkdown}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white transition shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white transition shadow-xs"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download .MD</span>
@@ -412,22 +412,22 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
               {report && (
                 <>
                   {/* Decision Support Checklist */}
-                  <div className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center gap-2">
-                      <CheckSquare className="w-4 h-4 text-teal-400" />
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5 flex items-center gap-2">
+                      <CheckSquare className="w-4 h-4 text-blue-600" />
                       <span>Operational Decision Checklist</span>
                     </h3>
                     <div className="space-y-2">
                       {report.checklist.map((item: IncidentReportExport['checklist'][number]) => (
-                        <div key={item.id} className="flex items-start gap-2.5 text-xs text-slate-200">
+                        <div key={item.id} className="flex items-start gap-2.5 text-xs text-slate-800">
                           <input
                             type="checkbox"
                             defaultChecked={item.completed}
-                            className="mt-0.5 rounded border-navy-600 bg-navy-950 text-teal-500 focus:ring-teal-400"
+                            className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                           />
                           <div>
-                            <span className="font-medium">{item.item}</span>
-                            <span className="text-[11px] text-slate-400 block">Lead: {item.recommended_role}</span>
+                            <span className="font-semibold">{item.item}</span>
+                            <span className="text-[11px] text-slate-500 block">Lead: {item.recommended_role}</span>
                           </div>
                         </div>
                       ))}
@@ -435,26 +435,26 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
                   </div>
 
                   {/* Recommendations Distinct From Executed Operations */}
-                  <div className="p-3.5 rounded-lg bg-navy-850 border border-navy-700/80 space-y-3">
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300">
+                  <div className="p-3.5 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-3">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
                       Recommendations (Advisory Only - Not Executed)
                     </h3>
                     {report.recommendations.map((rec: IncidentReportExport['recommendations'][number], i: number) => (
-                      <div key={i} className="p-2.5 rounded bg-navy-950 border border-navy-800 text-xs">
-                        <span className="font-bold text-amber-300 block mb-1">
+                      <div key={i} className="p-2.5 rounded-lg bg-amber-50/70 border border-amber-200 text-xs">
+                        <span className="font-bold text-amber-900 block mb-1">
                           [RECOMMENDED ADVICE - NOT EXECUTED] {rec.category}
                         </span>
-                        <p className="text-slate-300">{rec.advice}</p>
+                        <p className="text-slate-700">{rec.advice}</p>
                       </div>
                     ))}
                   </div>
 
                   {/* Markdown Raw Preview */}
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
                       Markdown Export Preview
                     </h3>
-                    <pre className="p-3 rounded-lg bg-navy-950 border border-navy-800 font-mono text-xs text-slate-300 overflow-x-auto max-h-60 whitespace-pre-wrap">
+                    <pre className="p-3.5 rounded-xl bg-slate-100 border border-slate-200 font-mono text-xs text-slate-800 overflow-x-auto max-h-60 whitespace-pre-wrap">
                       {report.markdown}
                     </pre>
                   </div>
@@ -466,23 +466,23 @@ export const IncidentDetailDrawer: React.FC<Props> = ({ incident, onClose, onInc
           {/* TAB 4: FUSION AUDIT */}
           {activeTab === 'fusion' && incident.is_fused && (
             <div className="space-y-4">
-              <div className="p-3 rounded-lg bg-teal-950/40 border border-teal-800/80 text-xs text-teal-200">
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900">
                 <strong>Incident Fusion Record:</strong> This master intelligence record fuses {incident.merged_incident_ids?.length || 0} separate reporting streams. Original records, timestamps, and conflicting assertions have been preserved.
               </div>
 
               <div>
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">
                   Fused Source Reports
                 </h3>
                 <div className="space-y-2">
                   {incident.original_reports?.map((rep: IncidentRecord, idx: number) => (
-                    <div key={idx} className="p-3 rounded-lg bg-navy-850 border border-navy-700/80 text-xs space-y-1">
+                    <div key={idx} className="p-3 rounded-xl bg-white border border-slate-200 text-xs space-y-1 shadow-2xs">
                       <div className="flex justify-between items-center">
-                        <span className="font-mono text-teal-300 font-bold">{rep.id}</span>
-                        <span className="text-slate-400">{new Date(rep.reported_at).toLocaleTimeString()}</span>
+                        <span className="font-mono text-blue-700 font-bold">{rep.id}</span>
+                        <span className="text-slate-500">{new Date(rep.reported_at).toLocaleTimeString()}</span>
                       </div>
-                      <p className="text-slate-300">{rep.summary}</p>
-                      <p className="text-slate-400 text-[11px]">Location: {rep.reported_location || 'Unspecified'}</p>
+                      <p className="text-slate-800">{rep.summary}</p>
+                      <p className="text-slate-500 text-[11px]">Location: {rep.reported_location || 'Unspecified'}</p>
                     </div>
                   ))}
                 </div>

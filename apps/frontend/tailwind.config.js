@@ -6,27 +6,24 @@ export default {
   ],
   theme: {
     extend: {
+      // Subtle elevation scale used across cards, toolbars and panels.
+      // (Tailwind v3 has no built-in `xs`/`2xs`, so we define them explicitly.)
+      boxShadow: {
+        '2xs': '0 1px 2px 0 rgb(15 23 42 / 0.04)',
+        xs: '0 1px 2px 0 rgb(15 23 42 / 0.05), 0 1px 3px 0 rgb(15 23 42 / 0.04)',
+      },
       colors: {
-        navy: {
-          950: '#070c14',
-          900: '#0b1320',
-          850: '#101b2e',
-          800: '#16243b',
-          700: '#21334f',
-          600: '#324a6f',
-        },
-        charcoal: {
-          900: '#121418',
-          800: '#1e2229',
-          700: '#2b303a',
-          600: '#424a57',
-        },
-        teal: {
-          DEFAULT: '#0ea5a0',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
+        command: {
+          bg: '#F8FAFC',
+          card: '#FFFFFF',
+          border: '#E2E8F0',
+          navy: '#0F172A',
+          slate: '#475569',
+          muted: '#64748B',
+          primary: '#2563EB',
+          emergency: '#DC2626',
+          success: '#15803D',
+          warning: '#B45309',
         },
       },
     },
